@@ -1,4 +1,4 @@
-
+#!/bin/bash
 USERNAME="ali-akber-79"
 SOURCE_ID=$1
 FILE_PATH=$2
@@ -15,7 +15,7 @@ cat > $RECIPE_FILE << EOF
 {
   "version": 1,
   "layers": {
-    "${USERNAME}.${SOURCE_ID}": {
+    "${SOURCE_ID}": {
       "source": "mapbox://tileset-source/${USERNAME}/${SOURCE_ID}",
       "minzoom": 0,
       "maxzoom": 16
