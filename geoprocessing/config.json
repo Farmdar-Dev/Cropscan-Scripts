@@ -1,0 +1,16 @@
+{
+    "user_name": "example_user",
+    "season": "2023",
+    "crop": "wheat",
+    "report_type": "Crop Scan",
+    "unit": "acre",
+    "is_L1": true,
+    "area_unit": "acres",
+    "Shp_Path": ["path/to/shapefile1.shp"],
+    "date": "2021-01-01",
+  
+  
+    "boundary_paths": ["path/to/boundary1.geojson", "path/to/boundary2.geojson"],
+    "boundary_survey_titles": ["aoi", "district"],
+    "save_path": "path/to/save/output/"
+  }
