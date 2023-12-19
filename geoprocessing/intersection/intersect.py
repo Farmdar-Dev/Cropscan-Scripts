@@ -2,7 +2,7 @@ import geopandas as gdp
 import pandas as pd
 
 # Writing intersect_caller function
-def intersect_caller(model_df, paths_boundaries):
+def intersect_caller(model_df, boundary_file_path):
     """
     function that takes a dataframe of a specific crop and a list of paths to boundary files
     and returns a list of dataframes of the intersected files
@@ -11,25 +11,20 @@ def intersect_caller(model_df, paths_boundaries):
     bound_dfs = []
     intersect_dfs = []
 
-    for i in paths_boundaries:
-        bound_dfs.append(gdp.read_file(i))
-    
+    for file in boundary_file_path:
+        intersect_dfs.append(intersect(gdp.read_file(file),model_df,))
     # # adding id to boundary file
     # for i in range(len(bound_dfs)):
     #     bound_dfs[i]['id'] = bound_dfs[i].index + 1
-    
-    
-    area = ''
-    dissolve = []
-    
-    for i in bound_dfs:
+    # for i in bound_dfs:
         
-        intersect_dfs.append(intersect(i,model_df,'Boundary Name'))
 
     return intersect_dfs
 
 
-
+"""
+Model Dataframe is the dataframe of a specific crop
+"""
 def intersect(bound_df,model_df,name, crop_id_to_name_dic):
     
     """Takes in boundary and model file and returns areawise stats
@@ -61,16 +56,17 @@ def intersect(bound_df,model_df,name, crop_id_to_name_dic):
 
     crop_name = crop_id_to_name_dic[model_df['crop id'][0]]
         
-    
+    # Boundary file and Model file(for a crop) intersection
     intersection = bound_df.overlay(model_df, how = "intersection")
 
     # Dissolving intersection polygons based on same UC
     intersection = intersection.dissolve(by = name)
     intersection = intersection.reset_index()
     
+    # TODO: check by plotting before and after dissolving
+    
 
-    # Finding crop_area and crop_perc
-        
+    # Finding crop_area and crop_perc  
     intersection[crop_name + '_area'] = intersection.area / 4046.8564224 
 
     # dropping crop id
