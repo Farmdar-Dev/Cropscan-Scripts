@@ -9,34 +9,14 @@ def process_shapefiles(shapefile_paths, unit):
     #crs reprojection TODO: Remove this when CRS is standardized
     merged_dataframe, og_crs = project_crs(merged_dataframe)
 
+    # Splitting merged_df to different dataframes that has seperate crops
+    dataframes_by_crop = split_dfs_by_predicted(merged_dataframe)
 
-    # changing datatype of column 'predicted' to integer
-    merged_dataframe['predicted'] = merged_dataframe['predicted'].astype(int)
-    # changing name of column 'predicted' to 'crop id'
-    merged_dataframe = merged_dataframe.rename(columns = {'predicted': 'crop id'})
-    # making variable called 'pred_arr' that stores all unique crop id in data
-    pred_arr = merged_dataframe['crop id'].unique()
-    
-    # Splitting merged_df to different dataframes that has seperate crops and storing them in array "dfs_out"
-    dfs_out = []
-    
-    for i in pred_arr:
-        dfs_out.append(merged_dataframe[merged_dataframe['crop id'] == i]) 
-        
-    # For each dataframe in dfs_out
-
-    for i in range(len(dfs_out)):
-        #Adding area column
-        calculate_area(dfs_out[i], unit)
-
-       # Changing crs back to orignal crs    
-        dfs_out[i] = dfs_out[i].to_crs(og_crs)
-        
-        # reseting index of all dataframes
-
-        dfs_out[i] = dfs_out[i].reset_index(drop=True)
-        
-    return dfs_out
+    for dataframe in dataframes_by_crop:
+        calculate_area(dataframe, unit)
+        dataframe.to_crs(og_crs, inplace=True)
+        dataframe.reset_index(drop=True, inplace=True)
+    return dataframes_by_crop
 
 
 def merge_shapefiles(shapefile_paths):
@@ -72,7 +52,7 @@ def project_crs(shapefile):
     return shapefile, og_crs
 
 
-def split_dfs_by_predicted(dataframes):
+def split_dfs_by_predicted(merged_dataframe):
     """
     Split a list of GeoDataFrames by the value of the 'predicted' column.
     Args:
@@ -80,12 +60,23 @@ def split_dfs_by_predicted(dataframes):
     Returns:
     A list of GeoDataFrames.
     """
-    dfs_out = []
-    for df in dataframes:
-        predicted_values = df['predicted'].unique()
-        for value in predicted_values:
-            dfs_out.append(df[df['predicted'] == value])
-    return dfs_out
+    
+    # TODO: [1] fix this id change 
+    
+    # changing datatype of column 'predicted' to integer
+    merged_dataframe['predicted'] = merged_dataframe['predicted'].astype(int)
+    # changing name of column 'predicted' to 'crop id'
+    merged_dataframe = merged_dataframe.rename(columns = {'predicted': 'crop id'})
+    # making variable called 'pred_arr' that stores all unique crop id in data
+    unique_crops = merged_dataframe['crop id'].unique()
+    
+    # Splitting merged_df to different dataframes that has seperate crops 
+    # TODO: [2] see if this can be standardized
+    filtered_dataframes = []
+
+    for crop_id in unique_crops:
+        filtered_df = merged_dataframe[merged_dataframe['crop id'] == crop_id]
+        filtered_dataframes.append(filtered_df)
 
 
 
