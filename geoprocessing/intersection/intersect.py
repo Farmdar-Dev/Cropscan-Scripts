@@ -12,13 +12,13 @@ def intersect_caller(model_df, boundary_file_path):
     intersect_dfs = []
 
     for file in boundary_file_path:
-        intersect_dfs.append(intersect(gdp.read_file(file),model_df,))
+        bound_dfs.append(gdp.read_file(file))
     # # adding id to boundary file
     # for i in range(len(bound_dfs)):
     #     bound_dfs[i]['id'] = bound_dfs[i].index + 1
-    # for i in bound_dfs:
-        
-
+    
+    for i in bound_dfs:
+        intersect_dfs.append(intersect(i,model_df))
     return intersect_dfs
 
 
@@ -39,10 +39,9 @@ def intersect(bound_df,model_df,name, crop_id_to_name_dic):
     """
     
     # Removing passbook before intersecting
-    
     if 'passbook' in model_df.columns:
         model_df = model_df.drop('passbook',axis = 1)
-    
+
     
     # Changing Crs of both Boundary Data and Model Data
     orignal_crs = bound_df.crs
@@ -70,9 +69,7 @@ def intersect(bound_df,model_df,name, crop_id_to_name_dic):
     intersection[crop_name + '_area'] = intersection.area / 4046.8564224 
 
     # dropping crop id
-    
     intersection = intersection.drop(['crop id'], axis = 1)
-    
     
     # to store geometry for later use
     tb_short = bound_df[[name,'geometry']]
@@ -87,7 +84,6 @@ def intersect(bound_df,model_df,name, crop_id_to_name_dic):
     intersection = pd.concat([intersection,tb_no_crop],axis = 0)
     
     # Changing datatype from float to int
- 
     intersection[crop_name + '_area'] = intersection[crop_name + '_area'].astype(int)
     
     
