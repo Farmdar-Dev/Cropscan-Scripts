@@ -8,7 +8,7 @@
     "area_unit": "acres",
     "shapefile_paths": ["/Users/mac/Desktop/Farmdar/Cropscan-Scripts/test_data/al_moiz_l1_pilote_sugarcane_2023/al_moiz_l1_pilote_sugarcane_2023.shp"],
     "date": "2021-01-01",
-    "boundary_paths": ["/Users/mac/Desktop/Farmdar/Cropscan-Scripts/test_data/almoiz_aoi_pilot_2023.geojson"],
+    "boundary_file_paths": ["/Users/mac/Desktop/Farmdar/Cropscan-Scripts/test_data/almoiz_aoi_pilot_2023.geojson"],
     "boundary_survey_titles": ["aoi"],
     "save_path": "path/to/save/output/"
   }
