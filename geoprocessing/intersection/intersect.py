@@ -1,8 +1,23 @@
 import geopandas as gdp
+from matplotlib import pyplot as plt
 import pandas as pd
+from constants.generic import Column_to_dissolve 
+from constants.crop_dict import crop_dictionary
 
-# Writing intersect_caller function
-def intersect_caller(model_df, boundary_file_path):
+
+# TODO: Fix the naming + flow of these functions
+def intersect_all(list_of_crop_dfs, boundary_file_paths):
+    """
+    function that takes a list of dataframes of different crops and a list of paths to boundary files
+    and returns a list of dataframes of the intersected files
+    """
+    intersect_dfs = []
+    for df in list_of_crop_dfs:
+        intersect_dfs.append(intersect_wrapper(df, boundary_file_paths))
+    return intersect_dfs
+
+
+def intersect_wrapper(model_df, boundary_file_paths):
     """
     function that takes a dataframe of a specific crop and a list of paths to boundary files
     and returns a list of dataframes of the intersected files
@@ -11,21 +26,21 @@ def intersect_caller(model_df, boundary_file_path):
     bound_dfs = []
     intersect_dfs = []
 
-    for file in boundary_file_path:
+    for file in boundary_file_paths:
         bound_dfs.append(gdp.read_file(file))
     # # adding id to boundary file
     # for i in range(len(bound_dfs)):
     #     bound_dfs[i]['id'] = bound_dfs[i].index + 1
     
     for i in bound_dfs:
-        intersect_dfs.append(intersect(i,model_df))
+        intersect_dfs.append(intersect(i,model_df, name = Column_to_dissolve, crop_dictionary = crop_dictionary))
     return intersect_dfs
 
 
 """
 Model Dataframe is the dataframe of a specific crop
 """
-def intersect(bound_df,model_df,name, crop_id_to_name_dic):
+def intersect(bound_df,model_df,name, crop_dictionary):
     
     """Takes in boundary and model file and returns areawise stats
 
@@ -53,15 +68,15 @@ def intersect(bound_df,model_df,name, crop_id_to_name_dic):
     model_df = model_df.to_crs(estimated_utm_crs_model)
     
 
-    crop_name = crop_id_to_name_dic[model_df['crop id'][0]]
-        
+    crop_name = crop_dictionary[model_df['crop id'][0]]
+    bound_df.plot()
     # Boundary file and Model file(for a crop) intersection
     intersection = bound_df.overlay(model_df, how = "intersection")
-
+    intersection.plot()
     # Dissolving intersection polygons based on same UC
     intersection = intersection.dissolve(by = name)
     intersection = intersection.reset_index()
-    
+    intersection.plot()
     # TODO: check by plotting before and after dissolving
     
 
@@ -92,7 +107,7 @@ def intersect(bound_df,model_df,name, crop_id_to_name_dic):
     intersection = intersection.merge(tb_short, on= name, how='inner')
     intersection = intersection.set_geometry('geometry')
     intersection.drop(columns = ['Geo'],inplace = True)
-    
+    plt.show()
     
     # Converting back to orignal Crs
     intersection = intersection.to_crs(orignal_crs)

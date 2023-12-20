@@ -533,7 +533,6 @@ for i in range(1, len(ans_dfs)):  # Start from the second DataFrame (index 1)
 
 
 # Removing Duplicated Columns
-
 for i in range(len(ans)):
 
     # Get a list of columns to drop based on suffixes
