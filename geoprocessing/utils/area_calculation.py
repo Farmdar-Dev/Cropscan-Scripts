@@ -1,4 +1,4 @@
-from geoprocessing.constants.generic import AREA_CONVERSION_FACTORS
+from constants.generic import AREA_CONVERSION_FACTORS
 
 def calculate_area(df, area_unit):
     """

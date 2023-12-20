@@ -1,9 +1,17 @@
 import geopandas as geopd
 import pandas as pd
-from area_calculation import calculate_area
+from utils.area_calculation import calculate_area
 
 
 def process_shapefiles(shapefile_paths, unit):
+    """
+    Read shapefiles and return a list of GeoDataFrames.
+    Args:
+    shapefile_paths: A list of paths to shapefiles.
+    unit: Unit of area to be used for calculations.
+    Returns:
+    A list of GeoDataFrames split by crop.
+    """
     merged_dataframe = merge_shapefiles(shapefile_paths)
     
     #crs reprojection TODO: Remove this when CRS is standardized
@@ -78,6 +86,7 @@ def split_dfs_by_predicted(merged_dataframe):
         filtered_df = merged_dataframe[merged_dataframe['crop id'] == crop_id]
         filtered_dataframes.append(filtered_df)
 
+    return filtered_dataframes
 
 
 
