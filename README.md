@@ -1,69 +1,53 @@
-# B2B-Console-Data-Preparation
 
-SOP L1
+# GeoProcessing Application
+## Prerequisites
 
-Inputs
+Before you begin, ensure you have the following installed on your system:
+- Python 3.x
+- Compatible with both Windows and Unix-based systems
 
+## Installation
 
-The Script will take 2 files as input.
+Follow these steps to set up the GeoProcessing application:
 
-Model File 
+### 1. Clone the Repository
 
-This file will be in .shp format.
-It will have one compulsory column of predicted  ( IT SHOULD BE  STRING) which will have the crop id or esurvey id  that is contained in Color Standardization Sheet.
-Esurvey id is 100
-To identify no of  growers passbook should be added. If the passbook is not available, donot add this column
+### 2. Navigate to the Project Directory
 
-Boundary file 
-	
-This file will be in .geojson format.
-It must be of name as follow : 
-aoi.geojson
-district.geojson
-tehsil.geojson
-uc.geojson
-gate_circles.geojson
-deh.geojson
-mouza.geojson
-any other new area zone
+```bash
+cd geoprocessing
+```
 
-It should  contain 2 column with name as Boundary Name and id starting with 1
+### 3. Virtual Environment Setup
 
-FOR E SURVEY GEOJSON
-1) Field ID (String / Text) 
-2) Passbook No (String / Text)
-3)  id (incremental)
+It's recommended to use a virtual environment for Python projects. This isolates your project dependencies from other projects.
 
+#### For Unix-based Systems:
 
-The Survey Point File needs to be prepared and provide separately,
-1) Geojson 2) id (incremental 3) Crop (text) (Sugarcane)
+```bash
+python3 -m venv venv
+source venv/bin/activate
+```
 
+#### For Windows:
 
-SOP L3
+```bash
+python -m venv venv
+.env\Scriptsctivate
+```
 
-L-3 REQUIREMENTS FOR NAMRA
+### 4. Install Dependencies
 
+Install all required dependencies using the following command:
 
-This file will be in .shp format.
-It will have one compulsory column of predicted  ( IT SHOULD BE  STRING/text) 
+```bash
+pip install -r requirements.txt
+```
 
-GEOJSON
- for mapbox geojson L3 requirements columns: 
-id (row number), 
-Area Acres, 
-Variety (includes names of variety), 
-c_id (mention in the sheet of color standardization).c_id ki type INTEGER rakhna
+## Running the Application
 
+To run the GeoProcessing application, use the following command:
 
-b) Working
-
-The script will ask 
-
-How many model files? (n)
-Enter path of model file no? (1 to n)
-How many boundary files? (n)
-Enter path of boundary files? (1 to n)
-Enter column on which boundary needs to dissolved? (1 to n)
-Enter user name? (jksm etc)
-Enter survey season? (2022 or 2023 or 2018 etc)
-Enter date? (2023-08-01 etc) 
+```bash
+python3 main.py
+```
