@@ -3,7 +3,7 @@ import pandas as pd
 import os
 from constants.crop_dict import crop_dictionary
 from utils.area_calculation import calculate_area
-
+from constants.generic import PREDICTED_COLUMN
 # TODO: use function in dataframe processor all across the code for reprojection
 def estimate_and_convert_to_utm(df):
     """
@@ -27,7 +27,7 @@ def intersect_all(crop_dfs, boundary_file_paths, output_folder, unit, survey_tit
 
     boundary_dfs = [estimate_and_convert_to_utm(df) for df in boundary_dfs]
     crop_dfs = [estimate_and_convert_to_utm(df) for df in crop_dfs]
-    crop_names = [crop_dictionary.get(df['crop id'].iloc[0], 'Unknown Crop') for df in crop_dfs]
+    crop_names = [crop_dictionary.get(df[PREDICTED_COLUMN].iloc[0], 'Unknown Crop') for df in crop_dfs]
 
     all_intersections = []
     for boundary_df in boundary_dfs:
