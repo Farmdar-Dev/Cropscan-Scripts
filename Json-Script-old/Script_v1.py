@@ -54,6 +54,7 @@ def area_hectares(df_merged):
     
     df_merged['area hectare'] =  (df_merged.area / 10000).round(2)
 
+
 def crop_dic_creator():
     
     """
