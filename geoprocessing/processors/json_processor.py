@@ -13,7 +13,7 @@ def read_config_json(file_path):
         config = json.load(file)
     return config
 
-
+# TODO: To be rewritten 
 def survey_json_creator(boundary_data, bound_df, survey_title, date,
                         report_type, crop, crop_id_to_name_dic):
     """
