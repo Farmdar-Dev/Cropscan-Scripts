@@ -1,115 +1,78 @@
-import geopandas as gdp
-from matplotlib import pyplot as plt
+import geopandas as gpd
 import pandas as pd
-from constants.generic import Column_to_dissolve 
+import os
 from constants.crop_dict import crop_dictionary
+#from constants.generic import 
 
 
-# TODO: Fix the naming + flow of these functions
-def intersect_all(list_of_crop_dfs, boundary_file_paths):
+
+
+def estimate_and_convert_to_utm(df):
     """
-    function that takes a list of dataframes of different crops and a list of paths to boundary files
-    and returns a list of dataframes of the intersected files
+    Estimate UTM CRS and convert the dataframe to that CRS.
     """
-    intersect_dfs = []
-    for df in list_of_crop_dfs:
-        intersect_dfs.append(intersect_wrapper(df, boundary_file_paths))
-    return intersect_dfs
+    utm_crs = df.estimate_utm_crs()
+    return df.to_crs(utm_crs)
 
-
-def intersect_wrapper(model_df, boundary_file_paths):
+def intersect_all(crop_dfs, boundary_file_paths, output_folder):
     """
-    function that takes a dataframe of a specific crop and a list of paths to boundary files
-    and returns a list of dataframes of the intersected files
+    Intersects each crop dataframe with each boundary dataframe and aggregates the results.
     """
+    boundary_dfs = [gpd.read_file(path) for path in boundary_file_paths]
     
-    bound_dfs = []
-    intersect_dfs = []
-
-    for file in boundary_file_paths:
-        bound_dfs.append(gdp.read_file(file))
-    # # adding id to boundary file
-    # for i in range(len(bound_dfs)):
-    #     bound_dfs[i]['id'] = bound_dfs[i].index + 1
+    # Have to store original geometry because the dataframe is converted to UTM CRS - it messed up geometries
+    # and overlay() doesn't work with different CRS
+    # As a workaround, we'll restore the original geometry before any operation and replace based on the id column
     
-    for i in bound_dfs:
-        intersect_dfs.append(intersect(i,model_df, name = Column_to_dissolve, crop_dictionary = crop_dictionary))
-    return intersect_dfs
+    for boundary_df in boundary_dfs:
+        boundary_df['original_geometry'] = boundary_df.geometry
 
+    # TODO: fix this CRS bullshit so that we don't have to convert to convert or anything
+    boundary_dfs = [estimate_and_convert_to_utm(df) for df in boundary_dfs]
+    crop_dfs = [estimate_and_convert_to_utm(df) for df in crop_dfs]
+    crop_names = [crop_dictionary.get(df['crop id'].iloc[0], 'Unknown Crop') for df in crop_dfs]
 
-"""
-Model Dataframe is the dataframe of a specific crop
-"""
-def intersect(bound_df,model_df,name, crop_dictionary):
-    
-    """Takes in boundary and model file and returns areawise stats
+    all_intersections = []
+    for boundary_df in boundary_dfs:
+        for crop_df, crop_name in zip(crop_dfs, crop_names):
+            intersection = gpd.overlay(crop_df, boundary_df, how='intersection')
+            intersection['crop'] = crop_name
+            all_intersections.append(intersection)
 
-    Args:
-        bound_df: Geodataframe of UC or District or Tehsil
-        model_df: Geodataframe of maize or other or other vegetation
-        area : string that tells if bound_df is UC or Tehsil or District
-    Returns:
-        intersection: Geodataframe that tells UC or District or Tehsilwise stats
-        
+    aggregated_data = aggregate_intersections(all_intersections)
+    pivoted_data = pivot_data(aggregated_data)
+    save_combined_as_geojson(pivoted_data, boundary_dfs, output_folder)
+
+def aggregate_intersections(intersections):
     """
-    
-    # Removing passbook before intersecting
-    if 'passbook' in model_df.columns:
-        model_df = model_df.drop('passbook',axis = 1)
+    Aggregates intersection data to calculate the total acreage of each crop in each polygon.
+    """
+    aggregated_data = pd.concat(intersections)
+    # TODO : Cater factor of unit given from generic constants
+    aggregated_data['acreage'] = aggregated_data.geometry.area / 4046.85642
+    print(aggregated_data.columns)
+    return aggregated_data.groupby(['Boundary Name', 'crop'])['acreage'].sum().reset_index()
 
-    
-    # Changing Crs of both Boundary Data and Model Data
-    orignal_crs = bound_df.crs
-    
-    estimated_utm_crs_bound = bound_df.estimate_utm_crs().to_string()
-    estimated_utm_crs_model = model_df.estimate_utm_crs().to_string()
-    
-    bound_df = bound_df.to_crs(estimated_utm_crs_bound)
-    model_df = model_df.to_crs(estimated_utm_crs_model)
-    
+def pivot_data(df):
+    """
+    Pivot the data to have crops as columns and their acreage as values.
+    """
+    pivot_df = df.pivot(index='Boundary Name', columns='crop', values='acreage').reset_index()
+    return pivot_df.fillna(0)  # Fill NaNs with 0
 
-    crop_name = crop_dictionary[model_df['crop id'][0]]
-    bound_df.plot()
-    # Boundary file and Model file(for a crop) intersection
-    intersection = bound_df.overlay(model_df, how = "intersection")
-    intersection.plot()
-    # Dissolving intersection polygons based on same UC
-    intersection = intersection.dissolve(by = name)
-    intersection = intersection.reset_index()
-    intersection.plot()
-    # TODO: check by plotting before and after dissolving
+def save_combined_as_geojson(df, boundary_dfs, output_folder):
+    """
+    Saves the pivoted data as a single combined GeoJSON file.
+    """
+    if not os.path.exists(output_folder):
+        os.makedirs(output_folder)
+   
     
+    for i, boundary_df in enumerate(boundary_dfs):
+        output_path = os.path.join(output_folder, f'combined_${i}.geojson')
+        # Restoring the original geometry
+        combined_df = boundary_df.merge(df, on='Boundary Name')
+        combined_df.geometry = combined_df['original_geometry']
+        combined_df.drop(columns=['original_geometry'], inplace=True)  # Remove the temporary column
 
-    # Finding crop_area and crop_perc  
-    intersection[crop_name + '_area'] = intersection.area / 4046.8564224 
-
-    # dropping crop id
-    intersection = intersection.drop(['crop id'], axis = 1)
-    
-    # to store geometry for later use
-    tb_short = bound_df[[name,'geometry']]
-    
-
-    # To cater all those UC's with 0 Crops
-    tb_UC = set(bound_df[name])
-    intersection_UC = set(intersection[name])
-    no_crop_UC = tb_UC.difference(intersection_UC)
-    tb_no_crop = bound_df[bound_df[name].isin(no_crop_UC)]
-    tb_no_crop[crop_name + '_area'] = 0
-    intersection = pd.concat([intersection,tb_no_crop],axis = 0)
-    
-    # Changing datatype from float to int
-    intersection[crop_name + '_area'] = intersection[crop_name + '_area'].astype(int)
-    
-    
-    intersection = intersection.rename(columns = {'geometry' : 'Geo'})
-    intersection = intersection.set_geometry('Geo')
-    intersection = intersection.merge(tb_short, on= name, how='inner')
-    intersection = intersection.set_geometry('geometry')
-    intersection.drop(columns = ['Geo'],inplace = True)
-    plt.show()
-    
-    # Converting back to orignal Crs
-    intersection = intersection.to_crs(orignal_crs)
-    
-    return intersection
+        combined_df.to_file(output_path, driver='GeoJSON')

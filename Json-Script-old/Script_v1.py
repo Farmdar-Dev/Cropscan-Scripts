@@ -481,6 +481,9 @@ dfs_out = report_tileset_creation()
 crop_id_to_name_dic
 
 
+# In[]
+dfs_out
+
 # In[81]:
 
 
@@ -515,23 +518,32 @@ ans is 1d array of dataframes
 # Initialize the ans list with copies of the first DataFrame in ans_dfs
 ans = [ans_dfs[0][j].copy() for j in range(len(ans_dfs[0]))]
 
+print(ans)
+
+# In[]
+print("ans_dfs")
+print(len(ans_dfs[0]))
+
+
+# In[]
+print(ans)
+#print(type(ans))
+
+
+# In[]
 # Extract the columns from the first DataFrame as potential merge columns
 merge_columns = list(ans[0].columns)
 
+print(merge_columns)
+# In[]
+
+print("len ans_dfs", type(ans_dfs))
 # Loop through each DataFrame in ans_dfs
-for i in range(1, len(ans_dfs)):  # Start from the second DataFrame (index 1)
-    for j in range(len(ans_dfs[i])):
-        # Extract the common columns between the current DataFrame and merge_columns
-        common_columns = list(set(merge_columns) & set(ans_dfs[i][j].columns))
-        
 
-
-        # Merge the current DataFrame with ans[j] based on the dynamically determined common columns
-        ans[j] = ans[j].merge(ans_dfs[i][j], on=common_columns, how='inner')
 
 # ans now contains the merged DataFrames with dynamically determined merge columns
 
-
+# In[]
 # Removing Duplicated Columns
 for i in range(len(ans)):
 
@@ -551,8 +563,6 @@ for i in range(len(ans)):
         new_cols.append(j)
 
     ans[i].columns = new_cols
-        
-        
         
     ans[i] = ans[i].loc[:, ~ans[i].columns.duplicated()]
     
