@@ -9,7 +9,6 @@ def build_dataframe(filepaths: list):
         filepaths (list): _description_
     """
     return [gpd.read_file(file) for file in filepaths]
-    
 
 
 def validate_dataframe():
@@ -25,6 +24,14 @@ def reproject_df_crs(dataframe, crs=None):
         crs = dataframe.estimate_utm_crs()
     dataframe.to_crs(crs, inplace=True)
     pass
+
+
+def reproject_dfs_crs(dataframes: list, crs=None):
+    """
+    Reprojects the list of dataframe to the specified CRS
+    if no CRS is specified, it will estimate the utm CRS
+    """
+    [reproject_df_crs(df, crs) for df in dataframes]
 
 
 if __name__ == "__main__":
