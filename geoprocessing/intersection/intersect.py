@@ -4,13 +4,17 @@ import os
 from constants.crop_dict import crop_dictionary
 from utils.area_calculation import calculate_area
 from constants.generic import PREDICTED_COLUMN
+from processors.dataframe_processor import reproject_dfs_crs
 # TODO: use function in dataframe processor all across the code for reprojection
+
+
 def estimate_and_convert_to_utm(df):
     """
     Estimate UTM CRS and convert the dataframe to that CRS.
     """
     utm_crs = df.estimate_utm_crs()
     return df.to_crs(utm_crs)
+
 
 def intersect_all(crop_dfs, boundary_file_paths, output_folder, unit, survey_titles):
     """
@@ -25,38 +29,45 @@ def intersect_all(crop_dfs, boundary_file_paths, output_folder, unit, survey_tit
         boundary_df['original_geometry'] = boundary_df.geometry
         boundary_df['boundary_id'] = idx  # Unique identifier for each boundary
 
-    boundary_dfs = [estimate_and_convert_to_utm(df) for df in boundary_dfs]
-    crop_dfs = [estimate_and_convert_to_utm(df) for df in crop_dfs]
-    crop_names = [crop_dictionary.get(df[PREDICTED_COLUMN].iloc[0], 'Unknown Crop') for df in crop_dfs]
+    reproject_dfs_crs(boundary_dfs)
+    reproject_dfs_crs(crop_dfs)
+
+    crop_names = [crop_dictionary.get(
+        df[PREDICTED_COLUMN].iloc[0], 'Unknown Crop') for df in crop_dfs]
 
     all_intersections = []
     for boundary_df in boundary_dfs:
         for crop_df, crop_name in zip(crop_dfs, crop_names):
-            intersection = gpd.overlay(crop_df, boundary_df, how='intersection')
+            intersection = gpd.overlay(
+                crop_df, boundary_df, how='intersection')
             intersection['crop'] = crop_name
             all_intersections.append(intersection)
 
-    aggregated_data = aggregate_intersections(all_intersections,unit)
+    aggregated_data = aggregate_intersections(all_intersections, unit)
     pivoted_data = pivot_data(aggregated_data)
-    save_combined_as_geojson(pivoted_data, boundary_dfs, output_folder)
+    save_combined_as_geojson(pivoted_data, boundary_dfs, output_folder, survey_titles)
 
-def aggregate_intersections(intersections,unit):
+
+def aggregate_intersections(intersections, unit):
     """
     Aggregates intersection data to calculate the total acreage of each crop in each polygon.
     Uses the unique boundary identifier for accurate aggregation.
     """
     aggregated_data = pd.concat(intersections)
-    aggregated_data['acreage'] = calculate_area(aggregated_data,unit)
+    aggregated_data['acreage'] = calculate_area(aggregated_data, unit)
     return aggregated_data.groupby(['boundary_id', 'id', 'crop'])['acreage'].sum().reset_index()
+
 
 def pivot_data(df):
     """
     Pivot the data to have crops as columns and their acreage as values.
     """
-    pivot_df = df.pivot(index=['boundary_id', 'id'], columns='crop', values='acreage').reset_index()
+    pivot_df = df.pivot(index=['boundary_id', 'id'],
+                        columns='crop', values='acreage').reset_index()
     return pivot_df.fillna(0)  # Fill NaNs with 0
 
-def save_combined_as_geojson(df, boundary_dfs, output_folder):
+
+def save_combined_as_geojson(df, boundary_dfs, output_folder, survey_titles):
     """
     Saves the pivoted data as a single combined GeoJSON file.
     Restores the original geometry before saving.
@@ -64,10 +75,10 @@ def save_combined_as_geojson(df, boundary_dfs, output_folder):
     if not os.path.exists(output_folder):
         os.makedirs(output_folder)
 
-
-    for i, boundary_df in enumerate(boundary_dfs):
-        output_path = os.path.join(output_folder, f'combined_${i}.geojson')
+    for idx, boundary_df in enumerate(boundary_dfs):
+        output_path = os.path.join(output_folder, f'${survey_titles[idx]}.geojson')
         combined_df = boundary_df.merge(df, on=['boundary_id', 'id'])
         combined_df.geometry = combined_df['original_geometry']
-        combined_df.drop(columns=['original_geometry', "boundary_id"], inplace=True)
+        combined_df.drop(columns=['original_geometry',
+                         "boundary_id"], inplace=True)
         combined_df.to_file(output_path, driver='GeoJSON')

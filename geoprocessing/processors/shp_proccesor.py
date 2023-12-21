@@ -1,6 +1,6 @@
 import geopandas as geopd
 import pandas as pd
-from processors.dataframe_processor import build_dataframe
+from processors.dataframe_processor import build_dataframe , reproject_df_crs
 from constants.generic import PREDICTED_COLUMN
 
 def process_shapefiles(shapefile_paths, unit):
@@ -15,8 +15,7 @@ def process_shapefiles(shapefile_paths, unit):
     merged_dataframe = merge_shapefiles(shapefile_paths)
 
     # crs reprojection TODO: Remove this when CRS is standardized
-    merged_dataframe = project_crs(merged_dataframe)
-
+    reproject_df_crs(merged_dataframe)
     # Splitting merged_df to different dataframes that has seperate crops
     dataframes_by_crop = split_dfs_by_predicted(merged_dataframe)
 
