@@ -37,20 +37,6 @@ def merge_shapefiles(shapefile_paths):
     return merged_dataframe
 
 
-def project_crs(shapefile):
-    """
-    Estimate the CRS of a shapefile and reproject it to that CRS.
-    Args:
-    shapefile: A GeoDataFrame.
-    Returns:
-    A GeoDataFrame.
-    """
-
-    # Changing the crs of dataframe to estimate crs
-    estimated_utm_crs = shapefile.estimate_utm_crs().to_string()
-    shapefile = shapefile.to_crs(estimated_utm_crs)
-    return shapefile
-
 
 def split_dfs_by_predicted(merged_dataframe):
     """

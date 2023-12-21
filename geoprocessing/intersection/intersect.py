@@ -8,13 +8,6 @@ from processors.dataframe_processor import reproject_dfs_crs
 # TODO: use function in dataframe processor all across the code for reprojection
 
 
-def estimate_and_convert_to_utm(df):
-    """
-    Estimate UTM CRS and convert the dataframe to that CRS.
-    """
-    utm_crs = df.estimate_utm_crs()
-    return df.to_crs(utm_crs)
-
 
 def intersect_all(crop_dfs, boundary_file_paths, output_folder, unit, survey_titles):
     """
@@ -45,8 +38,8 @@ def intersect_all(crop_dfs, boundary_file_paths, output_folder, unit, survey_tit
 
     aggregated_data = aggregate_intersections(all_intersections, unit)
     pivoted_data = pivot_data(aggregated_data)
-    save_combined_as_geojson(pivoted_data, boundary_dfs, output_folder, survey_titles)
-
+    #save_combined_as_geojson(pivoted_data, boundary_dfs, output_folder, survey_titles)
+    return make_boundary_aggregated_dfs(pivoted_data, boundary_dfs)
 
 def aggregate_intersections(intersections, unit):
     """
@@ -82,3 +75,21 @@ def save_combined_as_geojson(df, boundary_dfs, output_folder, survey_titles):
         combined_df.drop(columns=['original_geometry',
                          "boundary_id"], inplace=True)
         combined_df.to_file(output_path, driver='GeoJSON')
+
+def make_boundary_aggregated_dfs(pivoted_data, boundary_dfs):
+    """
+
+    Args:
+        pivoted_data (_type_): _description_
+    """
+    boundary_wise_dfs = []
+    
+    for idx, boundary_df in enumerate(boundary_dfs):
+        combined_df = boundary_df.merge(pivoted_data, on=['boundary_id', 'id'])
+        combined_df.geometry = combined_df['original_geometry']
+        combined_df.drop(columns=['original_geometry',
+                                "boundary_id"], inplace=True)
+        boundary_wise_dfs.append(combined_df)
+        
+    #[print(df) for df in boundary_wise_dfs]
+    return boundary_wise_dfs
