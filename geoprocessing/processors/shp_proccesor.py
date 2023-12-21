@@ -13,8 +13,8 @@ def process_shapefiles(shapefile_paths, unit):
     A list of GeoDataFrames split by crop.
     """
     merged_dataframe = merge_shapefiles(shapefile_paths)
-    
-    #crs reprojection TODO: Remove this when CRS is standardized
+
+    # crs reprojection TODO: Remove this when CRS is standardized
     merged_dataframe, og_crs = project_crs(merged_dataframe)
 
     # Splitting merged_df to different dataframes that has seperate crops
@@ -39,10 +39,10 @@ def merge_shapefiles(shapefile_paths):
     dataframes = []
     for path in shapefile_paths:
         dataframes.append(geopd.read_file(path))
-    merged_dataframe = geopd.GeoDataFrame(pd.concat(dataframes, ignore_index=True))
+    merged_dataframe = geopd.GeoDataFrame(
+        pd.concat(dataframes, ignore_index=True))
     return merged_dataframe
-    
-    
+
 
 def project_crs(shapefile):
     """
@@ -68,17 +68,18 @@ def split_dfs_by_predicted(merged_dataframe):
     Returns:
     A list of GeoDataFrames.
     """
-    
-    # TODO: [1] fix this id change 
-    
+
+    # TODO: [1] fix this id change
+
     # changing datatype of column 'predicted' to integer
     merged_dataframe['predicted'] = merged_dataframe['predicted'].astype(int)
     # changing name of column 'predicted' to 'crop id'
-    merged_dataframe = merged_dataframe.rename(columns = {'predicted': 'crop id'})
+    merged_dataframe = merged_dataframe.rename(
+        columns={'predicted': 'crop id'})
     # making variable called 'pred_arr' that stores all unique crop id in data
     unique_crops = merged_dataframe['crop id'].unique()
-    
-    # Splitting merged_df to different dataframes that has seperate crops 
+
+    # Splitting merged_df to different dataframes that has seperate crops
     # TODO: [2] see if this can be standardized
     filtered_dataframes = []
 
@@ -88,6 +89,9 @@ def split_dfs_by_predicted(merged_dataframe):
 
     return filtered_dataframes
 
+
+def shp_validator():
+    pass
 
 
 if __name__ == "__main__":
