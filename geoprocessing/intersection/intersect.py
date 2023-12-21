@@ -3,6 +3,7 @@ import pandas as pd
 import os
 from constants.crop_dict import crop_dictionary
 
+# TODO: use function in dataframe processor all across the code for reprojection
 def estimate_and_convert_to_utm(df):
     """
     Estimate UTM CRS and convert the dataframe to that CRS.
