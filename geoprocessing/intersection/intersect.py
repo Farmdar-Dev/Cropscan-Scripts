@@ -8,13 +8,6 @@ from processors.dataframe_processor import reproject_dfs_crs
 # TODO: use function in dataframe processor all across the code for reprojection
 
 
-def estimate_and_convert_to_utm(df):
-    """
-    Estimate UTM CRS and convert the dataframe to that CRS.
-    """
-    utm_crs = df.estimate_utm_crs()
-    return df.to_crs(utm_crs)
-
 
 def intersect_all(crop_dfs, boundary_file_paths, output_folder, unit, survey_titles):
     """
