@@ -3,4 +3,5 @@ AREA_CONVERSION_FACTORS = {
     'HECTARE': 10000
 }
 
-Column_to_dissolve = "Boundary Name"
+# column that represents the predicted crop
+PREDICTED_COLUMN = 'predicted'
