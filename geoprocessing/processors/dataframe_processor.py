@@ -1,7 +1,6 @@
 import geopandas as gpd
 
 
-
 def build_dataframe(filepaths: list):
     """
     Converts file paths into dataframes
@@ -9,10 +8,22 @@ def build_dataframe(filepaths: list):
     Args:
         filepaths (list): _description_
     """
-    dataframes = [gpd.read_file(file) for file in filepaths]
+    return [gpd.read_file(file) for file in filepaths]
+    
 
 
 def validate_dataframe():
+    pass
+
+
+def reproject_df_crs(dataframe, crs=None):
+    """
+    Reprojects the dataframe to the specified CRS
+    if no CRS is specified, it will estimate the utm CRS
+    """
+    if crs is None:
+        crs = dataframe.estimate_utm_crs()
+    dataframe.to_crs(crs, inplace=True)
     pass
 
 

@@ -15,15 +15,11 @@ def process_shapefiles(shapefile_paths, unit):
     merged_dataframe = merge_shapefiles(shapefile_paths)
 
     # crs reprojection TODO: Remove this when CRS is standardized
-    merged_dataframe, og_crs = project_crs(merged_dataframe)
+    merged_dataframe = project_crs(merged_dataframe)
 
     # Splitting merged_df to different dataframes that has seperate crops
     dataframes_by_crop = split_dfs_by_predicted(merged_dataframe)
 
-    for dataframe in dataframes_by_crop:
-        calculate_area(dataframe, unit)
-        dataframe.to_crs(og_crs, inplace=True)
-        dataframe.reset_index(drop=True, inplace=True)
     return dataframes_by_crop
 
 

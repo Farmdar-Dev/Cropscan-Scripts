@@ -2,6 +2,7 @@ import geopandas as gpd
 import pandas as pd
 import os
 from constants.crop_dict import crop_dictionary
+from utils.area_calculation import calculate_area
 
 # TODO: use function in dataframe processor all across the code for reprojection
 def estimate_and_convert_to_utm(df):
@@ -11,7 +12,7 @@ def estimate_and_convert_to_utm(df):
     utm_crs = df.estimate_utm_crs()
     return df.to_crs(utm_crs)
 
-def intersect_all(crop_dfs, boundary_file_paths, output_folder, unit):
+def intersect_all(crop_dfs, boundary_file_paths, output_folder, unit, survey_titles):
     """
     Intersects each crop dataframe with each boundary dataframe and aggregates the results.
     """
@@ -35,17 +36,17 @@ def intersect_all(crop_dfs, boundary_file_paths, output_folder, unit):
             intersection['crop'] = crop_name
             all_intersections.append(intersection)
 
-    aggregated_data = aggregate_intersections(all_intersections)
+    aggregated_data = aggregate_intersections(all_intersections,unit)
     pivoted_data = pivot_data(aggregated_data)
     save_combined_as_geojson(pivoted_data, boundary_dfs, output_folder)
 
-def aggregate_intersections(intersections):
+def aggregate_intersections(intersections,unit):
     """
     Aggregates intersection data to calculate the total acreage of each crop in each polygon.
     Uses the unique boundary identifier for accurate aggregation.
     """
     aggregated_data = pd.concat(intersections)
-    aggregated_data['acreage'] = aggregated_data.geometry.area / 4046.85642
+    aggregated_data['acreage'] = calculate_area(aggregated_data,unit)
     return aggregated_data.groupby(['boundary_id', 'id', 'crop'])['acreage'].sum().reset_index()
 
 def pivot_data(df):
