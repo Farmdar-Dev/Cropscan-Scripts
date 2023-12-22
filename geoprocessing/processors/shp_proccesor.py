@@ -18,7 +18,6 @@ def process_shapefiles(shapefile_paths, unit):
     reproject_df_crs(merged_dataframe)
     # Splitting merged_df to different dataframes that has seperate crops
     dataframes_by_crop = split_dfs_by_predicted(merged_dataframe)
-
     return dataframes_by_crop
 
 
