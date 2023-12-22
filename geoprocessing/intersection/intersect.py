@@ -3,27 +3,41 @@ import pandas as pd
 import os
 from constants.crop_dict import crop_dictionary
 from utils.area_calculation import calculate_area
-from constants.generic import PREDICTED_COLUMN
-from processors.dataframe_processor import reproject_dfs_crs
-# TODO: use function in dataframe processor all across the code for reprojection
+from constants.generic import PREDICTED_COLUMN, ESURVEY_COLUMN
+from processors.dataframe_processor import reproject_dfs_crs, reproject_df_crs
+import geopandas as gpd
 
 
+def add_esurvey_area(boundary_df, esurvey_df, unit):
+    """
+    Adds the area of the boundary from the e-survey data to the boundary dataframe.
+    """
+    boundary_df_cpy = boundary_df.copy()
+    intersection = gpd.overlay(boundary_df_cpy, esurvey_df, how='intersection')
+    intersection[ESURVEY_COLUMN] = calculate_area(intersection, unit)
+    intersection = intersection.groupby(
+        ['id'])[ESURVEY_COLUMN].sum().reset_index()
+    boundary_df = boundary_df.merge(intersection, on='id', how='left')
+    return boundary_df
 
-def intersect_all(crop_dfs, boundary_file_paths, output_folder, unit, survey_titles):
+
+def intersect_all(crop_dfs, boundary_file_paths, output_folder, unit, survey_titles, esurvey):
     """
     Intersects each crop dataframe with each boundary dataframe and aggregates the results.
     """
     boundary_dfs = [gpd.read_file(path) for path in boundary_file_paths]
-    # Have to store original geometry because the dataframe is converted to UTM CRS - it messed up geometries
+    esurvey_df = gpd.read_file(esurvey)
+    # Have to store original geometry because the dataframe is overlayed - it messed up geometries
     # and overlay() doesn't work with different CRS
     # As a workaround, we'll restore the original geometry before any operation and replace based on the id column
     # Also since boundary_dfs is a list of dataframes, I have added unique identifier to each dataframe for conflict resolution
     for idx, boundary_df in enumerate(boundary_dfs):
         boundary_df['original_geometry'] = boundary_df.geometry
-        boundary_df['boundary_id'] = idx  # Unique identifier for each boundary
+        boundary_df['layer_id'] = idx  # Unique identifier for each boundary
 
     reproject_dfs_crs(boundary_dfs)
     reproject_dfs_crs(crop_dfs)
+    reproject_df_crs(esurvey_df)
 
     crop_names = [crop_dictionary.get(
         df[PREDICTED_COLUMN].iloc[0], 'Unknown Crop') for df in crop_dfs]
@@ -38,8 +52,10 @@ def intersect_all(crop_dfs, boundary_file_paths, output_folder, unit, survey_tit
 
     aggregated_data = aggregate_intersections(all_intersections, unit)
     pivoted_data = pivot_data(aggregated_data)
-    #save_combined_as_geojson(pivoted_data, boundary_dfs, output_folder, survey_titles)
-    return make_boundary_aggregated_dfs(pivoted_data, boundary_dfs)
+    save_combined_as_geojson(pivoted_data, boundary_dfs,
+                             output_folder, survey_titles, esurvey_df, unit)
+    return make_boundary_aggregated_dfs(pivoted_data, boundary_dfs, esurvey_df, unit)
+
 
 def aggregate_intersections(intersections, unit):
     """
@@ -48,19 +64,19 @@ def aggregate_intersections(intersections, unit):
     """
     aggregated_data = pd.concat(intersections)
     aggregated_data['acreage'] = calculate_area(aggregated_data, unit)
-    return aggregated_data.groupby(['boundary_id', 'id', 'crop'])['acreage'].sum().reset_index()
+    return aggregated_data.groupby(['layer_id', 'id', 'crop'])['acreage'].sum().reset_index()
 
 
 def pivot_data(df):
     """
     Pivot the data to have crops as columns and their acreage as values.
     """
-    pivot_df = df.pivot(index=['boundary_id', 'id'],
+    pivot_df = df.pivot(index=['layer_id', 'id'],
                         columns='crop', values='acreage').reset_index()
     return pivot_df.fillna(0)  # Fill NaNs with 0
 
 
-def save_combined_as_geojson(df, boundary_dfs, output_folder, survey_titles):
+def save_combined_as_geojson(df, boundary_dfs, output_folder, survey_titles, esurvey_df, unit):
     """
     Saves the pivoted data as a single combined GeoJSON file.
     Restores the original geometry before saving.
@@ -69,27 +85,31 @@ def save_combined_as_geojson(df, boundary_dfs, output_folder, survey_titles):
         os.makedirs(output_folder)
 
     for idx, boundary_df in enumerate(boundary_dfs):
-        output_path = os.path.join(output_folder, f'${survey_titles[idx]}.geojson')
-        combined_df = boundary_df.merge(df, on=['boundary_id', 'id'])
+        boundary_df = add_esurvey_area(boundary_df, esurvey_df, unit)
+        output_path = os.path.join(
+            output_folder, f'${survey_titles[idx]}.geojson')
+        combined_df = boundary_df.merge(df, on=['layer_id', 'id'])
         combined_df.geometry = combined_df['original_geometry']
         combined_df.drop(columns=['original_geometry',
-                         "boundary_id"], inplace=True)
+                         "layer_id"], inplace=True)
         combined_df.to_file(output_path, driver='GeoJSON')
 
-def make_boundary_aggregated_dfs(pivoted_data, boundary_dfs):
+
+def make_boundary_aggregated_dfs(pivoted_data, boundary_dfs, esurvey_df, unit):
     """
 
     Args:
         pivoted_data (_type_): _description_
     """
     boundary_wise_dfs = []
-    
+
     for idx, boundary_df in enumerate(boundary_dfs):
-        combined_df = boundary_df.merge(pivoted_data, on=['boundary_id', 'id'])
+        boundary_df = add_esurvey_area(boundary_df, esurvey_df, unit)
+        combined_df = boundary_df.merge(pivoted_data, on=['layer_id', 'id'])
         combined_df.geometry = combined_df['original_geometry']
         combined_df.drop(columns=['original_geometry',
-                                "boundary_id"], inplace=True)
+                                  "layer_id"], inplace=True)
         boundary_wise_dfs.append(combined_df)
-        
-    #[print(df) for df in boundary_wise_dfs]
+
+    # [print(df) for df in boundary_wise_dfs]
     return boundary_wise_dfs
