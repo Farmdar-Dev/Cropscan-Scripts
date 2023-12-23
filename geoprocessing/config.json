@@ -1,13 +1,12 @@
 {
-  "user_name": "example_user",
+  "user_name": "Faran",
   "season": "2023",
-  "crop": "wheat",
+  "crop": "idk",
   "report_type": "Crop Scan",
-  "unit": "acre",
   "is_L1": true,
-  "area_unit": "acres",
+  "area_unit": "acre",
   "shapefile_paths": [
-    "/Users/mac/Desktop/Farmdar/Cropscan-Scripts/test_data/noon_l1_2023/noon_l1_2023.shp"
+    "C:/Users/hiban/Downloads/Faran_l1_with_other_crop_fixed/Faran_l1_with_other_crop_fixed.shp"
   ],
   "date": "2021-01-01",
   "boundary_file_paths": [
@@ -15,5 +14,5 @@
     "/Users/mac/Desktop/Farmdar/Cropscan-Scripts/test_data/noon_l1_2023/noon_gates.geojson"
   ],
   "survey_titles": ["aoi","gates"],
-  "save_path": "path/to/save/output/"
+  "save_path": "C:/Users/hiban/Downloads/Faran_l1_with_other_crop_fixed"
 }

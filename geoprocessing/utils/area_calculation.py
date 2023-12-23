@@ -6,6 +6,6 @@ def calculate_area(df, area_unit):
     """
     area_unit = area_unit.upper()
     if area_unit in AREA_CONVERSION_FACTORS:
-       return df.area / AREA_CONVERSION_FACTORS[area_unit]
+       df['area'] = df.area / AREA_CONVERSION_FACTORS[area_unit]
     else:
         raise ValueError("Invalid area unit")

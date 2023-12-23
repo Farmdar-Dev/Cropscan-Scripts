@@ -99,5 +99,10 @@ crop_dictionary = {
     1046: 'AUS-133',
     1047: 'CP-90',
     1048: 'US-54',
-    1049: 'CPF-239'
+    1049: 'CPF-239',
+    111: 'Artichoke',
+    112: 'Grapes',
+    113: 'OliveTree',
+    114: 'Jojoba',
+    115: 'Asparagus'
 }
