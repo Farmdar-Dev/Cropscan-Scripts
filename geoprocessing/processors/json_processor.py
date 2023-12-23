@@ -1,4 +1,5 @@
 import json
+import geopandas as gpd
 
 
 def read_config_json(file_path):
@@ -13,108 +14,89 @@ def read_config_json(file_path):
         config = json.load(file)
     return config
 
-# # TODO: To be rewritten 
-# def survey_json_creator(intersected_dataframes, config):
-#     """
-#     Creates a JSON object for survey data for the dashboard 
-#     Args:
-#         boundary_data: GeoJSON data of the boundary
-#         bound_df: Geodataframe of the boundary
-#         survey_title: Title of the survey
-#         date: Date of the survey
-#         report_type: Type of the report
-#         crop: Crop name
-#         crop_id_to_name_dic: Dictionary mapping crop id to crop name
-#     Returns:
-#         A JSON object
-#     """
-#     date = config['date']
-#     date_key = date
-#     crop_scan_report_type = report_type
+# # TODO: To be rewritten
 
-#     desired_json_object = {
-#         'survey_title': survey_title,
-#         'agg_stats': {
-#             date_key: {
-#                 crop_scan_report_type: {},
-#             }
-#         },
-#         'geometry': []
-#     }
 
-#     bound_cols = list(bound_df.columns)
-#     bound_cols.remove('geometry')
+def survey_json_creator(intersected_dataframes, config):
+    """
+    Creates a JSON object for survey data for the dashboard 
+    Args:
+        boundary_data: GeoJSON data of the boundary
+        bound_df: Geodataframe of the boundary
+        survey_title: Title of the survey
+        date: Date of the survey
+        report_type: Type of the report
+        crop: Crop name
+        crop_id_to_name_dic: Dictionary mapping crop id to crop name
+    Returns:
+        A JSON object
+    """
+    # user_name = config["user_name"]
+    # season = config["season"]
+    # crop = config["crop"]
+    # date = config["date"]
+    # report_type = config["report_type"]
+    # # TODO : to be done
+    # total_stats = config["total_stats"]
+    # surveys = [
+    #     {
+    #         'user_name': user_name,
+    #         'survey_season': season,
+    #         'crop': crop,
+    #         'total_stats': total_stats,
+    #         'survey_array': []
+    #     }
+    # ]
+    
+    
+    
+    survey_array = []
+    survey_obj_template = {
+        'survey_title': '',
+        'agg_stats': {
+           "date" : {
+                "report_type": {},
+            }
+        },
+        'geometry': [
+        
+            
+        ]
+    }
 
-#     crop_scan_entry = {}
-#     prop_dic = {}
+    geometry_properties = {}
+    report_properties = {}
+    
+    for df in intersected_dataframes:
+            survey_title = df['survey_title'].iloc[0]
+            df = df.drop(columns=['survey_title'])
 
-#     # Iterate through features and add entries to the 'agg_stats' dictionary
+            for index, row in df.iterrows():
+                # Extract specific columns
+                boundary_name = row['Boundary Name']
+                boundary_id = row['id']
+                esurvey_area = row['Esurvey Area']
+                geometry_geojson = json.loads(gpd.GeoSeries(row['geometry']).to_json())
+                
+                # Print values separately
+                print("Survey Title:", survey_title)
+                print("Boundary Name:", boundary_name)
+                print("ID:", boundary_id)
+                print("Esurvey Area:", esurvey_area)
+                
+               
+                other_properties = {
+                    column: row[column] for column in df.columns if column not in ['Boundary Name', 'id', 'Esurvey Area', 'geometry']
+                }
+                print("Other Properties:", other_properties)
 
-#     for feature in boundary_data['features']:
-
-#         crop_scan_entry = {}  # Create a new dictionary for each feature
-#         prop_dic = {}
-
-#         for i in bound_cols:
-#             if i != 'esurvey_area':
-#                 if i.replace("_area", "") in crop_id_to_name_dic.values():
-#                     crop_scan_entry[i.replace(
-#                         "_area", "").title()] = feature['properties'][i]
-#                 else:
-
-#                     j = i.replace("_area", "").title()
-
-#                     if j == 'Id':
-#                         j = 'id'
-
-#                     prop_dic[j] = feature['properties'][i]
-#             else:
-
-#                 j = i.replace("_area", "").title()
-
-#                 if j == 'Id':
-#                     j = 'id'
-#                 prop_dic[j] = feature['properties'][i]
-
-#         # Extract geometry information
-
-#         geometry = {
-#             'type': bound_df['geometry'].geom_type[0],
-#             'coordinates': feature['geometry']['coordinates']
-#         }
-
-#         desired_json_object['agg_stats'][date_key][crop_scan_report_type][prop_dic['id']] = crop_scan_entry
-
-#         if report_type == 'Crop Scan':
-#             prop_dic['Crop Area'] = crop_scan_entry[crop]
-#         else:
-#             c_area = 0
-
-#             for i in crop_scan_entry.values():
-#                 c_area += i
-
-#             prop_dic['Crop Area'] = c_area
-
-#         if 'Esurvey' not in prop_dic.keys():
-#             prop_dic['Esurvey'] = '-'
-
-#         prop_dic['Esurvey Area'] = prop_dic['Esurvey']
-#         del prop_dic['Esurvey']
-
-#         # Add the geometry information directly to the JSON object
-#         desired_json_object['geometry'].append({
-#             'type': 'FeatureCollection',
-#             'properties': prop_dic,
-#             'geometry': geometry
-#         })
-
-#     # Convert the JSON object to a JSON string
-#     desired_json_string = json.dumps(desired_json_object, indent=2)
-
-#     # Print the desired JSON string
-#     print(desired_json_string)
-
-#     return desired_json_object
+               
+                print("Geometry GeoJSON:", geometry_geojson)
+                
+                
+       
+        
+    
 
 
 def json_validator(json_object):
