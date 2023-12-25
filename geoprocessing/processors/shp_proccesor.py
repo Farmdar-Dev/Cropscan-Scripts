@@ -4,11 +4,10 @@ from processors.dataframe_processor import build_dataframe , reproject_df_crs, s
 
 def process_shapefiles(shapefile_paths):
     """
-    Read shapefiles and returns a list of GeoDataFrame.
+    Read shapefiles and returns a single GeoDataFrame with crs.
     Args:
     shapefile_paths: A list of paths to shapefiles.
-
-    A list of geodataframe.
+    A geodataframe.
     """
     merged_dataframe = merge_shapefiles(shapefile_paths)
 
@@ -20,11 +19,9 @@ def process_shapefiles(shapefile_paths):
 
 def merge_shapefiles(shapefile_paths):
     """
-    Read shapefiles and return a list of GeoDataFrames.
+    Read shapefiles and returns a single GeoDataFrames.
     Args:
     shapefile_paths: A list of paths to shapefiles.
-    unit: Unit of area to be used for calculations.
-    Returns:
     A list of GeoDataFrames.
     """
     dataframes = build_dataframe(shapefile_paths)

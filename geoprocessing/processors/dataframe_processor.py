@@ -9,7 +9,7 @@ def build_dataframe(filepaths: list):
     Converts file paths into dataframes
 
     Args:
-        filepaths (list): _description_
+        filepaths (list): a list of shapefile paths
     """
     return [gpd.read_file(file) for file in filepaths]
 
@@ -39,7 +39,7 @@ def reproject_dfs_crs(dataframes: list, crs=None):
 
 def split_dfs_by_predicted(merged_dataframe):
     """
-    Split a list of GeoDataFrames by the value of the 'predicted' column.
+    Split a GeoDataFrames by the value of the 'predicted' column.
     Args:
     dataframes: A list of GeoDataFrames.
     Returns:
@@ -48,6 +48,8 @@ def split_dfs_by_predicted(merged_dataframe):
 
     # changing datatype of column 'predicted' to integer
     merged_dataframe[PREDICTED_COLUMN] = merged_dataframe[PREDICTED_COLUMN].astype(int)
+    
+    #gathering unique crop ids
     unique_crops = merged_dataframe[PREDICTED_COLUMN].unique()
 
     # Splitting merged_df to different dataframes that has seperate crops
