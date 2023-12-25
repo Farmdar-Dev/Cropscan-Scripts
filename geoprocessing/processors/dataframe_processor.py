@@ -57,7 +57,7 @@ def split_dfs_by_predicted(merged_dataframe):
     filtered_dataframes = []
 
     for crop_id in unique_crops:
-        filtered_df = merged_dataframe[merged_dataframe[PREDICTED_COLUMN] == crop_id]
+        filtered_df = merged_dataframe[merged_dataframe[PREDICTED_COLUMN] == crop_id].copy()
         filtered_dataframes.append(filtered_df)
 
     return filtered_dataframes
