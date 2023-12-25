@@ -16,9 +16,6 @@ def read_config_json(file_path):
         config = json.load(file)
     return config
 
-# # TODO: To be rewritten
-
-
 def survey_json_creator(intersected_dataframes, config):
     """
     Creates a JSON object for survey data for the dashboard 
@@ -41,6 +38,8 @@ def survey_json_creator(intersected_dataframes, config):
     }
 
     total_aoi_stats = {}
+    total_area = ""
+    total_esurvey = ""
     for df in intersected_dataframes:
         survey_title = df['survey_title'].iloc[0]
         df = df.drop(columns=['survey_title'])
@@ -64,7 +63,7 @@ def survey_json_creator(intersected_dataframes, config):
                 column: row[column] for column in df.columns if column not in ['Boundary Name', 'id', 'Esurvey Area', 'geometry']
             }
 
-            Crop_Area = get_main_crop_area(rep_properties, config["crop"])
+            Crop_Area = get_main_crop_area(rep_properties, config["crop"], config["report_type"])
             report_properties[boundary_id] = rep_properties
 
             geo_obj = geometry_obj_template.copy()
@@ -77,9 +76,11 @@ def survey_json_creator(intersected_dataframes, config):
             geo_obj['geometry'] = geometry_geojson
             geometry_objects.append(geo_obj)
 
-            # if survey_title == "aoi":
-                #total_area, total_esurvey = get_total_aoi_stats(rep_properties, df)
-                # print("total stats", total_stats)
+            if survey_title == "aoi":
+                total_area_, total_esurvey_ = get_total_aoi_stats(rep_properties, df)
+                total_area = total_area_
+                total_esurvey = total_esurvey_
+                print("total stats", total_area, total_esurvey)
         survey_obj['geometry'] = geometry_objects
         survey_obj['agg_stats'][config["date"]
                                 ][config["report_type"]] = report_properties
@@ -89,8 +90,8 @@ def survey_json_creator(intersected_dataframes, config):
 
     total_stats = {
         "Total Growers": total_growers,
-        # "Total Area": total_area,
-        # "Total Esurvey": total_esurvey,
+        "Total Area": total_area,
+        "Total Esurvey": total_esurvey,
         "Total Crop Area": "-"
     }
 
@@ -119,7 +120,7 @@ def get_total_aoi_stats(report_properties, df):
     return total_area, total_esurvey_area
 
 
-def get_main_crop_area(report_properties, crop):
+def get_main_crop_area(report_properties, crop, report_type):
     """
     Returns the area of the main crop
     Args:
@@ -128,8 +129,13 @@ def get_main_crop_area(report_properties, crop):
     Returns:
         Area of the main crop
     """
-    # TODO : This depends on report type
-
+    if report_type != "Crop Scan":
+        total_crop_area = 0
+        for key in report_properties:
+           total_crop_area += report_properties[key]
+        return total_crop_area
+    
+    
     return report_properties[crop]
 
 
@@ -149,7 +155,6 @@ def get_esurvey_stats(esurvey_path):
     # TODO: add check if no passbook number column found
     if esurvey_df.get('Passbook No') is not None:
         passbook_number = esurvey_df['Passbook No']
-        print("growers", len(passbook_number.unique()))
         return str(len(passbook_number.unique()))
 
     return "N/A"
