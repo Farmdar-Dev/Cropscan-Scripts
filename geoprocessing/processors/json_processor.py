@@ -92,8 +92,10 @@ def survey_json_creator(intersected_dataframes, config):
     total_growers = get_esurvey_stats(config["esurvey_path"])
     
     total_stats = {
-        "total_growers": total_growers,
-
+        "Total Growers": total_growers,
+        "Total Area": str(total_aoi_stats[0]),
+        "Total Esurvey": str(total_aoi_stats[1]),
+        "Total Crop Area": "-"
     }
     
     survey_json = {
@@ -114,14 +116,10 @@ def get_total_aoi_stats(report_properties, df):
     # get total crop area
     #which will be sum of all crop areas
     total_area = 0
-    total_crop_area = 0
     for key in report_properties:
         total_area += report_properties[key]
     # get total esurvey area
     total_esurvey_area = df['Esurvey Area'].iloc[0]
-    print("total area", total_area)
-    print("total crop area", total_crop_area)
-    print("total esurvey area", total_esurvey_area)
     return {total_area, total_esurvey_area}
 
 
@@ -134,6 +132,8 @@ def get_main_crop_area(report_properties, crop):
     Returns:
         Area of the main crop
     """
+    # TODO : This depends on report type
+    
     return report_properties[crop]
 
 

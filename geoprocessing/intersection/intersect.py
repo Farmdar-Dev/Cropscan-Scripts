@@ -8,10 +8,16 @@ from processors.dataframe_processor import reproject_dfs_crs, reproject_df_crs
 import geopandas as gpd
 
 
-def add_esurvey_area(boundary_df, esurvey_df, unit):
+def add_esurvey_area(boundary_df, esurvey_path, unit):
     """
     Adds the area of the boundary from the e-survey data to the boundary dataframe.
     """
+    if esurvey_path == "":
+         boundary_df[ESURVEY_COLUMN] = "-"
+         return boundary_df
+    
+    esurvey_df = gpd.read_file(esurvey_path)
+    reproject_df_crs(esurvey_df)
     boundary_df_cpy = boundary_df.copy()
     intersection = gpd.overlay(boundary_df_cpy, esurvey_df, how='intersection')
     intersection[ESURVEY_COLUMN] = calculate_area(intersection, unit)
@@ -21,7 +27,7 @@ def add_esurvey_area(boundary_df, esurvey_df, unit):
     return boundary_df
 
 
-def intersect_all(crop_dfs, boundary_dict, output_folder, unit, esurvey):
+def intersect_all(crop_dfs, boundary_dict, output_folder, unit, esurvey_path):
     """
     Intersects each crop dataframe with each boundary dataframe and aggregates the results.
     Utilizes a tuple of (title, dataframe) to maintain the association between the boundary dataframes and their titles.
@@ -30,7 +36,7 @@ def intersect_all(crop_dfs, boundary_dict, output_folder, unit, esurvey):
     # Create tuples of (title, dataframe)
     boundary_tuples = [(title, gpd.read_file(path))
                        for title, path in boundary_dict.items()]
-    esurvey_df = gpd.read_file(esurvey)
+    #esurvey_df = gpd.read_file(esurvey)
 
     # Reproject CRS if necessary and other preprocessing
     for title, boundary_df in boundary_tuples:
@@ -40,7 +46,7 @@ def intersect_all(crop_dfs, boundary_dict, output_folder, unit, esurvey):
         reproject_df_crs(boundary_df)
 
     reproject_dfs_crs(crop_dfs)
-    reproject_df_crs(esurvey_df)
+    #reproject_df_crs(esurvey_df)
 
     # Deriving crop names from the crop dataframes
     crop_names = [crop_dictionary.get(
@@ -58,9 +64,9 @@ def intersect_all(crop_dfs, boundary_dict, output_folder, unit, esurvey):
     pivoted_data = pivot_data(aggregated_data)
 
     save_combined_as_geojson(
-        pivoted_data, boundary_tuples, output_folder, esurvey_df, unit)
+        pivoted_data, boundary_tuples, output_folder, esurvey_path, unit)
 
-    return make_boundary_aggregated_dfs(pivoted_data, boundary_tuples, esurvey_df, unit)
+    return make_boundary_aggregated_dfs(pivoted_data, boundary_tuples, esurvey_path, unit)
 
 
 def aggregate_intersections(intersections, unit):
