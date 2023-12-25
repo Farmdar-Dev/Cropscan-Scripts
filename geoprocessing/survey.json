@@ -1,8 +1,13 @@
 {
-  "user_name": "example_user",
+  "user_name": "Faran",
   "survey_season": "2023",
   "crop": "sugarcane",
-  "total_stats": { "Total Growers": "N/A", "Total Crop Area": "-" },
+  "total_stats": {
+    "Total Growers": "103",
+    "Total Area": 145291.43088574684,
+    "Total Esurvey": 3737.3149267047256,
+    "Total Crop Area": "-"
+  },
   "survey_array": [
     {
       "survey_title": "aoi",
@@ -26,7 +31,7 @@
             "id": 1,
             "Boundary Name": "Adam",
             "Crop Area": 17105.954320596866,
-            "Esurvey Area": "-"
+            "Esurvey Area": 3737.3149267047256
           },
           "geometry": {
             "type": "MultiPolygon",
@@ -543,7 +548,7 @@
             "id": 1,
             "Boundary Name": "Chak Abdullah Madarisa",
             "Crop Area": 3050.129153530185,
-            "Esurvey Area": "-"
+            "Esurvey Area": 196.24626523780327
           },
           "geometry": {
             "type": "MultiPolygon",
@@ -682,7 +687,7 @@
             "id": 2,
             "Boundary Name": "Maher Shareef Manghar Shareef",
             "Crop Area": 8066.77646956959,
-            "Esurvey Area": "-"
+            "Esurvey Area": 2534.1330305252877
           },
           "geometry": {
             "type": "MultiPolygon",
@@ -938,7 +943,7 @@
             "id": 3,
             "Boundary Name": "Shahar Fareed",
             "Crop Area": 4081.6036475280166,
-            "Esurvey Area": "-"
+            "Esurvey Area": 889.9584726029332
           },
           "geometry": {
             "type": "MultiPolygon",
@@ -1028,7 +1033,7 @@
             "id": 4,
             "Boundary Name": "Dulla Bhadera Bakhsha Khan",
             "Crop Area": 1907.4444267329673,
-            "Esurvey Area": "-"
+            "Esurvey Area": 116.97715833869118
           },
           "geometry": {
             "type": "MultiPolygon",

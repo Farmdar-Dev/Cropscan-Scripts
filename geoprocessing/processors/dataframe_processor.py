@@ -43,7 +43,7 @@ def split_dfs_by_predicted(merged_dataframe):
     Args:
     dataframes: A list of GeoDataFrames.
     Returns:
-    A list of GeoDataFrames.
+    A list of GeoDataFrames.i
     """
 
     # changing datatype of column 'predicted' to integer
