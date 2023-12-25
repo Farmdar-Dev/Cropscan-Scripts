@@ -2,7 +2,7 @@
   "user_name": "example_user",
   "survey_season": "2023",
   "crop": "sugarcane",
-  "total_stats": { "total_growers": "N/A" },
+  "total_stats": { "Total Growers": "N/A", "Total Crop Area": "-" },
   "survey_array": [
     {
       "survey_title": "aoi",
@@ -10,11 +10,11 @@
         "2021-01-01": {
           "Crop Scan": {
             "1": {
-              "cotton": 5986.69,
-              "maize": 10856.01,
-              "other vegetation": 45114.57,
-              "others": 66238.69,
-              "sugarcane": 17106.33
+              "cotton": 5985.918590989168,
+              "maize": 10855.438063358346,
+              "other vegetation": 45109.61388926977,
+              "others": 66234.5060215327,
+              "sugarcane": 17105.954320596866
             }
           }
         }
@@ -25,7 +25,7 @@
           "properties": {
             "id": 1,
             "Boundary Name": "Adam",
-            "Crop Area": 17106.33,
+            "Crop Area": 17105.954320596866,
             "Esurvey Area": "-"
           },
           "geometry": {
@@ -506,32 +506,32 @@
         "2021-01-01": {
           "Crop Scan": {
             "1": {
-              "cotton": 889.13,
-              "maize": 3275.71,
-              "other vegetation": 25731.71,
-              "others": 21863.21,
-              "sugarcane": 3050.29
+              "cotton": 889.0060106168069,
+              "maize": 3275.568806601409,
+              "other vegetation": 25729.202870485155,
+              "others": 21862.888967134375,
+              "sugarcane": 3050.129153530185
             },
             "2": {
-              "cotton": 707.69,
-              "maize": 2994.17,
-              "other vegetation": 10510.91,
-              "others": 17949.89,
-              "sugarcane": 8066.67
+              "cotton": 707.734036560579,
+              "maize": 2994.2249776554245,
+              "other vegetation": 10509.467799383609,
+              "others": 17947.941308216316,
+              "sugarcane": 8066.77646956959
             },
             "3": {
-              "cotton": 2139.6,
-              "maize": 2354.82,
-              "other vegetation": 5619.2,
-              "others": 14585.17,
-              "sugarcane": 4081.95
+              "cotton": 2139.3621589952136,
+              "maize": 2354.639209537488,
+              "other vegetation": 5618.927647670637,
+              "others": 14584.435133819481,
+              "sugarcane": 4081.6036475280166
             },
             "4": {
-              "cotton": 2250.28,
-              "maize": 2231.39,
-              "other vegetation": 3252.69,
-              "others": 11840.33,
-              "sugarcane": 1907.45
+              "cotton": 2249.813586108321,
+              "maize": 2231.009410758012,
+              "other vegetation": 3252.031332690477,
+              "others": 11839.235515184615,
+              "sugarcane": 1907.4444267329673
             }
           }
         }
@@ -542,7 +542,7 @@
           "properties": {
             "id": 1,
             "Boundary Name": "Chak Abdullah Madarisa",
-            "Crop Area": 3050.29,
+            "Crop Area": 3050.129153530185,
             "Esurvey Area": "-"
           },
           "geometry": {
@@ -681,7 +681,7 @@
           "properties": {
             "id": 2,
             "Boundary Name": "Maher Shareef Manghar Shareef",
-            "Crop Area": 8066.67,
+            "Crop Area": 8066.77646956959,
             "Esurvey Area": "-"
           },
           "geometry": {
@@ -937,7 +937,7 @@
           "properties": {
             "id": 3,
             "Boundary Name": "Shahar Fareed",
-            "Crop Area": 4081.95,
+            "Crop Area": 4081.6036475280166,
             "Esurvey Area": "-"
           },
           "geometry": {
@@ -1027,7 +1027,7 @@
           "properties": {
             "id": 4,
             "Boundary Name": "Dulla Bhadera Bakhsha Khan",
-            "Crop Area": 1907.45,
+            "Crop Area": 1907.4444267329673,
             "Esurvey Area": "-"
           },
           "geometry": {

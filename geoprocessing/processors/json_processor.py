@@ -39,31 +39,27 @@ def survey_json_creator(intersected_dataframes, config):
         "properties": {},
 
     }
-    
+
     total_aoi_stats = {}
     for df in intersected_dataframes:
         survey_title = df['survey_title'].iloc[0]
         df = df.drop(columns=['survey_title'])
-        
+
         # make a copy of survey obj template
         survey_obj = survey_obj_template_creator(
             survey_title, config["date"], config["report_type"])
         geometry_objects = []
         report_properties = {}
-        
-        
+
         for index, row in df.iterrows():
             # Extract specific columns
             boundary_name = row['Boundary Name']
             boundary_id = row['id']
             esurvey_area = row['Esurvey Area']
 
-            
-            
-            
             geometry_geojson = json.loads(
                 gpd.GeoSeries(row['geometry']).to_json())
-            geometry_geojson =clean_geometry(geometry_geojson)
+            geometry_geojson = clean_geometry(geometry_geojson)
             rep_properties = {
                 column: row[column] for column in df.columns if column not in ['Boundary Name', 'id', 'Esurvey Area', 'geometry']
             }
@@ -71,7 +67,7 @@ def survey_json_creator(intersected_dataframes, config):
             Crop_Area = get_main_crop_area(rep_properties, config["crop"])
             report_properties[boundary_id] = rep_properties
 
-            geo_obj = geometry_obj_template.copy() 
+            geo_obj = geometry_obj_template.copy()
             geo_obj['properties'] = {
                 "id": boundary_id,
                 "Boundary Name": boundary_name,
@@ -80,24 +76,24 @@ def survey_json_creator(intersected_dataframes, config):
             }
             geo_obj['geometry'] = geometry_geojson
             geometry_objects.append(geo_obj)
-            
-            if survey_title == "aoi":
-                total_stats = get_total_aoi_stats(rep_properties, df)
-                print("total stats", total_stats)
+
+            # if survey_title == "aoi":
+                #total_area, total_esurvey = get_total_aoi_stats(rep_properties, df)
+                # print("total stats", total_stats)
         survey_obj['geometry'] = geometry_objects
         survey_obj['agg_stats'][config["date"]
                                 ][config["report_type"]] = report_properties
         survey_array.append(survey_obj)
 
     total_growers = get_esurvey_stats(config["esurvey_path"])
-    
+
     total_stats = {
         "Total Growers": total_growers,
-        "Total Area": str(total_aoi_stats[0]),
-        "Total Esurvey": str(total_aoi_stats[1]),
+        # "Total Area": total_area,
+        # "Total Esurvey": total_esurvey,
         "Total Crop Area": "-"
     }
-    
+
     survey_json = {
         "user_name": config["user_name"],
         "survey_season": config["season"],
@@ -114,13 +110,13 @@ def get_total_aoi_stats(report_properties, df):
     # get total area from geometry
 
     # get total crop area
-    #which will be sum of all crop areas
+    # which will be sum of all crop areas
     total_area = 0
     for key in report_properties:
         total_area += report_properties[key]
     # get total esurvey area
     total_esurvey_area = df['Esurvey Area'].iloc[0]
-    return {total_area, total_esurvey_area}
+    return total_area, total_esurvey_area
 
 
 def get_main_crop_area(report_properties, crop):
@@ -133,7 +129,7 @@ def get_main_crop_area(report_properties, crop):
         Area of the main crop
     """
     # TODO : This depends on report type
-    
+
     return report_properties[crop]
 
 
@@ -155,7 +151,7 @@ def get_esurvey_stats(esurvey_path):
         passbook_number = esurvey_df['Passbook No']
         print("growers", len(passbook_number.unique()))
         return str(len(passbook_number.unique()))
-    
+
     return "N/A"
 
 
@@ -170,7 +166,6 @@ def clean_geometry(geometry_obj):
     clean_geometry_obj = {}
     clean_geometry_obj = geometry_obj['features'][0]['geometry']
     return clean_geometry_obj
-  
 
 
 def survey_obj_template_creator(survey_title, date, report_type):
