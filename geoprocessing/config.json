@@ -1,20 +1,18 @@
 {
-  "user_name": "example_user",
+  "user_name": "Faran",
   "season": "2023",
-  "crop": "wheat",
+  "crop": "sugarcane",
   "report_type": "Crop Scan",
   "unit": "acre",
-  "is_L1": true,
   "area_unit": "acres",
   "shapefile_paths": [
     "/Users/mac/Desktop/Farmdar/Cropscan-Scripts/test_data/adam_l1_with_other_crop_2023/adam_l1_with_other_crop_2023.shp"
   ],
   "date": "2021-01-01",
-  "boundary_file_paths": [
-    "/Users/mac/Desktop/Farmdar/Cropscan-Scripts/test_data/adam_l1_with_other_crop_2023/aoi.geojson",
-    "/Users/mac/Desktop/Farmdar/Cropscan-Scripts/test_data/adam_l1_with_other_crop_2023/gate_circles.geojson"
-  ],
-  "survey_titles": ["aoi", "gates"],
+  "boundary_details": {
+    "aoi": "/Users/mac/Desktop/Farmdar/Cropscan-Scripts/test_data/adam_l1_with_other_crop_2023/aoi.geojson",
+    "gates": "/Users/mac/Desktop/Farmdar/Cropscan-Scripts/test_data/adam_l1_with_other_crop_2023/gate_circles.geojson"
+  },
   "save_path": "path/to/save/output/",
-  "esurvey_path": "/Users/mac/Desktop/Farmdar/Cropscan-Scripts/test_data/adam_l1_with_other_crop_2023/adam_esurvey.geojson"
+  "esurvey_path": ""
 }
