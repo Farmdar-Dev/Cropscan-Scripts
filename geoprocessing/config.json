@@ -3,16 +3,16 @@
   "season": "2023",
   "crop": "sugarcane",
   "report_type": "Crop Scan",
+  "is_L1": true,
   "unit": "acre",
-  "area_unit": "acres",
   "shapefile_paths": [
-    "/Users/mac/Desktop/Farmdar/Cropscan-Scripts/test_data/adam_l1_with_other_crop_2023/adam_l1_with_other_crop_2023.shp"
+    "C:/Users/hiban/Downloads/Faran_l1_with_other_crop_fixed/Faran_l1_with_other_crop_fixed.shp"
   ],
   "date": "2021-01-01",
   "boundary_details": {
-    "aoi": "/Users/mac/Desktop/Farmdar/Cropscan-Scripts/test_data/adam_l1_with_other_crop_2023/aoi.geojson",
-    "gates": "/Users/mac/Desktop/Farmdar/Cropscan-Scripts/test_data/adam_l1_with_other_crop_2023/gate_circles.geojson"
+    "aoi": "C:/Users/hiban/Downloads/faran_aoi.geojson",
+    "deh": "C:/Users/hiban/Downloads/faran_deh.geojson"
   },
-  "save_path": "path/to/save/output/",
-  "esurvey_path": "/Users/mac/Desktop/Farmdar/Cropscan-Scripts/test_data/adam_l1_with_other_crop_2023/adam_esurvey.geojson"
+  "save_path": "C:/Users/hiban/Downloads/Output",
+  "esurvey_path": "C:/Users/hiban/Downloads/Faran_ESurvey_1515.geojson"
 }
