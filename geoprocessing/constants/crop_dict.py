@@ -105,8 +105,11 @@ crop_dictionary = {
     113: 'OliveTree',
     114: 'Jojoba',
     115: 'Asparagus',
-    124: 'Stress',
+    124: 'Stress_',
     125: 'Mild Stress',
-    126: 'No Stress',
-    127: 'High Moisture'
+    126: 'No Stress_',
+    127: 'High Moisture',
+    103: "Low_",
+    104: "Medium_",
+    105: "High_",
 }
