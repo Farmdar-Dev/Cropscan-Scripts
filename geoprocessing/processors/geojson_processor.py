@@ -1,4 +1,5 @@
 from constants.crop_dict import crop_dictionary 
+from constants.generic import TARGET_CRS
 import os
  
  
@@ -19,5 +20,6 @@ def to_geojson(df, path, name):
     except Exception as e:
         print(f"An error occurred while trying to create the output folder: {e}")
     
+    df = df.to_crs(TARGET_CRS)
     df.to_file(f"{path}/{name}.geojson", driver = 'GeoJSON')
     

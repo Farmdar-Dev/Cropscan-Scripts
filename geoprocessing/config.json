@@ -1,18 +1,17 @@
 {
-  "user_name": "Faran",
+  "user_name": "Omni",
   "season": "2023",
-  "crop": "sugarcane",
-  "report_type": "Crop Scan",
-  "is_L1": true,
+  "crop": "Sugarcane",
+  "report_type": "SOM",
+  "is_L1": false,
   "unit": "acre",
   "shapefile_paths": [
-    "C:/Users/hiban/Downloads/Faran_l1_with_other_crop_fixed/Faran_l1_with_other_crop_fixed.shp"
+    "C:/Users/hiban/Downloads/omni/Omni_OM_aoi_level/Omni_OM_aoi_level.shp"
   ],
-  "date": "2021-01-01",
+  "date": "2023-12-27",
   "boundary_details": {
-    "aoi": "C:/Users/hiban/Downloads/faran_aoi.geojson",
-    "deh": "C:/Users/hiban/Downloads/faran_deh.geojson"
+    "aoi": "C:/Users/hiban/Downloads/omni/omni_aoi.geojson"
   },
-  "save_path": "C:/Users/hiban/Downloads/Output",
-  "esurvey_path": "C:/Users/hiban/Downloads/Faran_ESurvey_1515.geojson"
+  "save_path": "C:/Users/hiban/Downloads/omni",
+  "esurvey_path": ""
 }

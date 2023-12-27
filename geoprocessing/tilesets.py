@@ -69,7 +69,7 @@ def other_tilesets(df_list, config):
     assign_color_id(one_df)
     delete_predictions(one_df)
     add_index(one_df)
-    calculate_area(one_df, config["sunit"])
+    calculate_area(one_df, config["unit"])
     to_geojson(one_df, config['save_path'], config['report_type'])
 
 
