@@ -81,7 +81,7 @@ def aggregate_intersections(intersections, unit):
     """
     aggregated_data = pd.concat(intersections)
     aggregated_data['acreage'] = calculate_area(aggregated_data, unit)
-    return aggregated_data.groupby(['layer_id', 'id', 'crop'])['acreage'].sum().reset_index()
+    return aggregated_data.groupby(['layer_id', 'id', 'crop'])['acreage'].sum().round(2).reset_index()
 
 
 def pivot_data(df):
