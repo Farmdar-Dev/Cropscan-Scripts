@@ -1,4 +1,5 @@
 import geopandas as gpd
+import pandas as pd
 from constants.generic import PREDICTED_COLUMN
 from utils.area_calculation import calculate_area
 from constants.crop_dict import crop_dictionary
@@ -104,6 +105,15 @@ def add_index(df):
     manipulated dataframe
     """
     df.insert(0, 'id', range(1, 1 + len(df)))
+    
+def merge_df(list_of_df):
+    """
+    Merges a list of df into one df
+    Args: a list of dataframes
+    returns: one single dataframe
+    """
+    merged = pd.concat(list_of_df)
+    return merged
 
 
 if __name__ == "__main__":

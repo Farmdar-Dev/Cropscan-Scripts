@@ -1,6 +1,6 @@
 import geopandas as geopd
 import pandas as pd
-from processors.dataframe_processor import build_dataframe , reproject_df_crs, split_dfs_by_predicted
+from processors.dataframe_processor import build_dataframe , reproject_df_crs, split_dfs_by_predicted, merge_df
 
 def process_shapefiles(shapefile_paths):
     """
@@ -25,7 +25,7 @@ def merge_shapefiles(shapefile_paths):
     A list of GeoDataFrames.
     """
     dataframes = build_dataframe(shapefile_paths)
-    merged_dataframe = pd.concat(dataframes)
+    merged_dataframe = merge_df(dataframes)
     return merged_dataframe
 
 def shp_validator():

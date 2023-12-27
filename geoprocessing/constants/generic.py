@@ -6,3 +6,4 @@ AREA_CONVERSION_FACTORS = {
 # column that represents the predicted crop
 PREDICTED_COLUMN = 'predicted'
 ESURVEY_COLUMN = 'Esurvey Area'
+TARGET_CRS = 'EPSG:4326'
