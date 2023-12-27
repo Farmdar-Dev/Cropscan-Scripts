@@ -51,3 +51,26 @@ To run the GeoProcessing application, use the following command:
 ```bash
 python3 main.py
 ```
+
+## Sample config.json
+
+```bash
+{
+  "user_name": "Omni",
+  "season": "2023",
+  "crop": "Sugarcane",
+  "report_type": "SOM",
+  "is_L1": false,
+  "unit": "acre",
+  "shapefile_paths": [
+    "/Users/mac/Desktop/Farmdar/Cropscan-Scripts/test_data/Omni/Omni_OM_aoi_level/Omni_OM_aoi_level.shp"
+  ],
+  "date": "2023-08-21",
+  "boundary_details": {
+    "aoi": "/Users/mac/Desktop/Farmdar/Cropscan-Scripts/test_data/Omni/omni_aoi_slack.geojson",
+    "gates" : "Path to gates file"
+  },
+  "save_path": "/Users/mac/Desktop/Farmdar/Cropscan-Scripts/geoprocessing",
+  "esurvey_path": ""
+}
+```
