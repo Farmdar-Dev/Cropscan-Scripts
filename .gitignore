@@ -2,3 +2,12 @@ env
 __pycache__
 test_data
 output
+.DS_Store
+.env/
+venv/
+survey.json
+config.json
+.DS_Store
+
+
+
