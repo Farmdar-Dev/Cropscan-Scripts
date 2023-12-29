@@ -19,4 +19,7 @@ if __name__ == "__main__":
         dataframes_by_crop, config["boundary_details"], "output", unit, config["esurvey_path"])
     for df in intersected_dataframes:
         print(df)
+    print(intersected_dataframes)
     survey_json_creator(intersected_dataframes, config)
+    
+    

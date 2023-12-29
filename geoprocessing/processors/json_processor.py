@@ -64,6 +64,7 @@ def survey_json_creator(intersected_dataframes, config):
             }
 
             Crop_Area = get_main_crop_area(rep_properties, config["crop"], config["report_type"])
+            Crop_Area = round(Crop_Area, 2)
             report_properties[boundary_id] = rep_properties
 
             geo_obj = geometry_obj_template.copy()
@@ -77,7 +78,7 @@ def survey_json_creator(intersected_dataframes, config):
             geometry_objects.append(geo_obj)
 
             if survey_title == "aoi":
-                total_area_, total_esurvey_ = get_total_aoi_stats(rep_properties, df)
+                total_area_, total_esurvey_ = get_total_aoi_stats(rep_properties, df, intersected_dataframes[0])
                 total_area = total_area_
                 total_esurvey = total_esurvey_
                 print("total stats", total_area, total_esurvey)
@@ -107,14 +108,20 @@ def survey_json_creator(intersected_dataframes, config):
         json.dump(survey_json, outfile)
 
 
-def get_total_aoi_stats(report_properties, df):
+def get_total_aoi_stats(report_properties, df, aoi_df):
     # get total area from geometry
 
     # get total crop area
     # which will be sum of all crop areas
-    total_area = 0
-    for key in report_properties:
-        total_area += report_properties[key]
+    # total_area = 0
+    # for key in report_properties:
+    #     total_area += report_properties[key]
+    
+    #hiba was here
+    aoi_df = aoi_df.drop(['id', 'Boundary Name', 'geometry', 'Esurvey Area', 'survey_title'], axis=1)
+    print(aoi_df)
+    total_area = aoi_df.sum().sum()
+    
     # get total esurvey area
     total_esurvey_area = df['Esurvey Area'].iloc[0]
     return total_area, total_esurvey_area
