@@ -14,7 +14,7 @@ if __name__ == "__main__":
     unit = config["unit"]
     shapefiles = process_shapefiles(config["shapefile_paths"])
     dataframes_by_crop = split_dfs_by_predicted(shapefiles)
-    create_tilesets(dataframes_by_crop.copy(), config)
+    #create_tilesets(dataframes_by_crop.copy(), config)
     intersected_dataframes = intersect_all(
         dataframes_by_crop, config["boundary_details"], "output", unit, config["esurvey_path"])
     for df in intersected_dataframes:

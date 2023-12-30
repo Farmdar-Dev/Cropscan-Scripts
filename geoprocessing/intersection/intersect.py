@@ -21,6 +21,7 @@ def add_esurvey_area(boundary_df, esurvey_path, unit):
     boundary_df_cpy = boundary_df.copy()
     intersection = gpd.overlay(boundary_df_cpy, esurvey_df, how='intersection')
     intersection[ESURVEY_COLUMN] = calculate_area(intersection, unit)
+    print(intersection)
     intersection = intersection.groupby(['id_1'])[ESURVEY_COLUMN].sum().reset_index()
     intersection = intersection.rename({'id_1': 'id'}, axis='columns')
     
