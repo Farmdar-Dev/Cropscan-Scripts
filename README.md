@@ -60,7 +60,6 @@ python3 main.py
   "season": "2023",
   "crop": "Sugarcane",
   "report_type": "SOM",
-  "is_L1": false,
   "unit": "acre",
   "shapefile_paths": [
     "/Users/mac/Desktop/Farmdar/Cropscan-Scripts/test_data/Omni/Omni_OM_aoi_level/Omni_OM_aoi_level.shp"
