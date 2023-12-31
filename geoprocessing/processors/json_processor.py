@@ -1,6 +1,6 @@
 import json
 import geopandas as gpd
-
+import os
 from utils.area_calculation import calculate_area
 
 
@@ -64,6 +64,7 @@ def survey_json_creator(intersected_dataframes, config):
             }
 
             Crop_Area = get_main_crop_area(rep_properties, config["crop"], config["report_type"])
+            Crop_Area = round(Crop_Area, 2)
             report_properties[boundary_id] = rep_properties
 
             geo_obj = geometry_obj_template.copy()
@@ -77,14 +78,16 @@ def survey_json_creator(intersected_dataframes, config):
             geometry_objects.append(geo_obj)
 
             if survey_title == "aoi":
-                total_area_, total_esurvey_ = get_total_aoi_stats(rep_properties, df)
+                total_crop_area = get_main_crop_area(rep_properties, config["crop"], config["report_type"])
+                total_area_, total_esurvey_ = get_total_aoi_stats( df, intersected_dataframes[index])
                 total_area = total_area_
                 total_esurvey = total_esurvey_
-                print("total stats", total_area, total_esurvey)
+                
         survey_obj['geometry'] = geometry_objects
         survey_obj['agg_stats'][config["date"]
                                 ][config["report_type"]] = report_properties
         survey_array.append(survey_obj)
+
 
     total_growers = get_esurvey_stats(config["esurvey_path"])
 
@@ -92,7 +95,7 @@ def survey_json_creator(intersected_dataframes, config):
         "Total Growers": total_growers,
         "Total Area": total_area,
         "Total Esurvey": total_esurvey,
-        "Total Crop Area": "-"
+        "Total Crop Area": total_crop_area
     }
 
     survey_json = {
@@ -103,21 +106,25 @@ def survey_json_creator(intersected_dataframes, config):
         "survey_array": survey_array
     }
     # save the json file
-    with open('survey.json', 'w') as outfile:
+    save_path = config["save_path"] + "Json/"
+    file_name = "survey.json"
+
+    # Check if the directory exists
+    if not os.path.exists(save_path):
+        os.makedirs(save_path)
+
+    # Now, save the file in the directory
+    full_path = os.path.join(save_path, file_name)
+    with open(full_path, 'w') as outfile:
         json.dump(survey_json, outfile)
 
 
-def get_total_aoi_stats(report_properties, df):
-    # get total area from geometry
-
-    # get total crop area
-    # which will be sum of all crop areas
-    total_area = 0
-    for key in report_properties:
-        total_area += report_properties[key]
-    # get total esurvey area
-    total_esurvey_area = df['Esurvey Area'].iloc[0]
+def get_total_aoi_stats(df, aoi_df):
+    aoi_df = aoi_df.drop(columns=[col for col in ['id', 'Boundary Name', 'geometry', 'Esurvey Area', 'survey_title'] if col in aoi_df.columns])
+    total_area = aoi_df.sum().sum().round(2)
+    total_esurvey_area = df['Esurvey Area'].iloc[0] if 'Esurvey Area' in df.columns else 0
     return total_area, total_esurvey_area
+
 
 
 def get_main_crop_area(report_properties, crop, report_type):
