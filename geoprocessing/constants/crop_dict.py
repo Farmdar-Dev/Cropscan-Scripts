@@ -1,4 +1,6 @@
 crop_dictionary = {
+    
+    #crops
     0: 'Urban',
     1: 'Sugarcane',
     2: 'Cotton',
@@ -16,40 +18,58 @@ crop_dictionary = {
     14: 'Wheat',
     15: 'Tomato',
     16: 'Mountain',
-    20: 'Greenhouse',
+    
+    #maize variety
+    17: 'Grain', 
+    18: 'Silage',
+    
+    #sowing
+    19:'January',
+    20:'Febraury',
+    21:'March',
+    22:'April',
+    
+    #more crops
     23: 'Watermelon',
-    61: 'January',
-    62: 'February',
-    63: 'March',
-    64: 'April',
-    65: 'May',
-    66: 'June',
-    67: 'July',
-    68: 'August',
-    69: 'September',
-    70: 'October',
-    71: 'November',
-    72: 'December',
+    
+    #sowing
+    32: 'June-July',
+    33: 'August',
+    
+    #plant health
     73: 'Low Vegetation',
     74: 'Moderate',
     75: 'Good',
     76: 'Excellent',
+    
+    #plant stress
     77: 'Stress',
     78: 'Potential Stress',
     79: 'No Stress',
     80: 'High Vigour',
+    
+    #harvest monitering
     81: 'Remaining Sugarcane',
     82: 'Harvested',
+    
+    #VRA
     83: 'Low Zone',
     84: 'Medium Zone',
     85: 'High Zone',
+    
+    #som
     96: 'High',
     97: 'Medium',
     98: 'Low',
+    
+    #esurvey
     99: 'esurvey',
-    100: 'Other Variety',
+    
+    #maize
     101: 'Grain',
     102: 'Silage',
+    
+    #variety
     1000: 'Other Variety',
     1001: 'CoL-29',
     1002: 'CoL-44',
@@ -100,15 +120,21 @@ crop_dictionary = {
     1047: 'CP-90',
     1048: 'US-54',
     1049: 'CPF-239',
+    
+    #some more crops
     111: 'Artichoke',
     112: 'Grapes',
     113: 'OliveTree',
     114: 'Jojoba',
     115: 'Asparagus',
+    
+    #water stress
     124: 'Stress_',
     125: 'Mild Stress',
     126: 'No Stress_',
     127: 'High Moisture',
+    
+    #nitrogen report
     103: "Low_",
     104: "Medium_",
     105: "High_",
