@@ -2,10 +2,7 @@ import json
 import geopandas as gpd
 import os
 from utils.area_calculation import calculate_area
-<<<<<<< HEAD
 from processors.dataframe_processor import reproject_df_crs
-=======
->>>>>>> main
 
 
 def read_config_json(file_path):
@@ -83,11 +80,7 @@ def survey_json_creator(intersected_dataframes, config):
 
             if survey_title == "aoi":
                 total_crop_area = get_main_crop_area(rep_properties, config["crop"], config["report_type"])
-<<<<<<< HEAD
                 total_area_, total_esurvey_ = get_total_aoi_stats(df, intersected_dataframes[index])
-=======
-                total_area_, total_esurvey_ = get_total_aoi_stats( df, intersected_dataframes[index])
->>>>>>> main
                 total_area = total_area_
                 total_esurvey = total_esurvey_
                 
@@ -128,14 +121,9 @@ def survey_json_creator(intersected_dataframes, config):
 
 
 def get_total_aoi_stats(df, aoi_df):
-<<<<<<< HEAD
     reproject_df_crs(aoi_df)
     aoi_df['area'] = calculate_area(aoi_df, 'acre')
     total_area = aoi_df['area'].sum().round(2)
-=======
-    aoi_df = aoi_df.drop(columns=[col for col in ['id', 'Boundary Name', 'geometry', 'Esurvey Area', 'survey_title'] if col in aoi_df.columns])
-    total_area = aoi_df.sum().sum().round(2)
->>>>>>> main
     total_esurvey_area = df['Esurvey Area'].iloc[0] if 'Esurvey Area' in df.columns else 0
     return total_area, total_esurvey_area
 
