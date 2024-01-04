@@ -38,10 +38,10 @@ def survey_json_creator(intersected_dataframes, config):
 
     }
 
-    total_aoi_stats = {}
     total_area = ""
     total_esurvey = ""
     for df in intersected_dataframes:
+        
         survey_title = df['survey_title'].iloc[0]
         df = df.drop(columns=['survey_title'])
 
@@ -50,6 +50,18 @@ def survey_json_creator(intersected_dataframes, config):
             survey_title, config["date"], config["report_type"])
         geometry_objects = []
         report_properties = {}
+        
+        # TODO : refactor this function which has turned into a spaghetti 
+        if survey_title == "aoi":
+            # get a copy of the first row
+            row = df.iloc[0]
+            rep_properties = {
+                column: row[column] for column in df.columns if column not in ['Boundary Name', 'id', 'Esurvey Area', 'geometry']
+            }
+            total_crop_area = get_main_crop_area(rep_properties, config["crop"], config["report_type"])
+            total_area_, total_esurvey_ = get_total_aoi_stats(df)
+            total_area = total_area_
+            total_esurvey = total_esurvey_
 
         for index, row in df.iterrows():
             # Extract specific columns
@@ -78,11 +90,7 @@ def survey_json_creator(intersected_dataframes, config):
             geo_obj['geometry'] = geometry_geojson
             geometry_objects.append(geo_obj)
 
-            if survey_title == "aoi":
-                total_crop_area = get_main_crop_area(rep_properties, config["crop"], config["report_type"])
-                total_area_, total_esurvey_ = get_total_aoi_stats(intersected_dataframes[index])
-                total_area = total_area_
-                total_esurvey = total_esurvey_
+           
                 
         survey_obj['geometry'] = geometry_objects
         survey_obj['agg_stats'][config["date"]
@@ -124,7 +132,8 @@ def get_total_aoi_stats(aoi_df):
     reproject_df_crs(aoi_df)
     aoi_df['area'] = calculate_area(aoi_df, 'acre')
     total_area = aoi_df['area'].sum().round(2)
-    
+    # drop the area column 
+    aoi_df.drop(columns=['area'], inplace=True)
     total_esurvey_area = 0
     if not aoi_df['Esurvey Area'].eq('-').any():
         total_esurvey_area = aoi_df['Esurvey Area'].sum().round(2)
