@@ -1,4 +1,5 @@
 import json
+import math
 import geopandas as gpd
 import os
 from utils.area_calculation import calculate_area
@@ -16,6 +17,7 @@ def read_config_json(file_path):
     with open(file_path, 'r') as file:
         config = json.load(file)
     return config
+
 
 def survey_json_creator(intersected_dataframes, config):
     """
@@ -41,7 +43,6 @@ def survey_json_creator(intersected_dataframes, config):
     total_area = ""
     total_esurvey = ""
     for df in intersected_dataframes:
-        
         survey_title = df['survey_title'].iloc[0]
         df = df.drop(columns=['survey_title'])
 
@@ -50,22 +51,17 @@ def survey_json_creator(intersected_dataframes, config):
             survey_title, config["date"], config["report_type"])
         geometry_objects = []
         report_properties = {}
-        
+
         # TODO : refactor this function which has turned into a spaghetti
-        #stop using random words, i thought spaghetti was a complex data structure for 10 secs, or is it omg? 
+        # stop using random words, i thought spaghetti was a complex data structure for 10 secs, or is it omg?
         if survey_title == "aoi":
-            # # get a copy of the first row
-            # row = df.iloc[0]
-            # rep_properties = {
-            #     column: row[column] for column in df.columns if column not in ['Boundary Name', 'id', 'Esurvey Area', 'geometry']
-            # }
-            #total_crop_area = get_main_crop_area(rep_properties, config["crop"], config["report_type"])
-            
-            #we need to extract total crop area from the df
-            #generate new df with only crop area columns
-            col_to_keep = [col for col in df.columns if col not in ['Boundary Name', 'id', 'Esurvey Area', 'geometry', 'area']]
+            # we need to extract total crop area from the df
+            # generate new df with only crop area columns
+            col_to_keep = [col for col in df.columns if col not in [
+                'Boundary Name', 'id', 'Esurvey Area', 'geometry', 'area']]
             crop_df = df[col_to_keep]
-            total_area_, total_esurvey_, total_crop_area = get_total_aoi_stats(df, crop_df)
+            total_area_, total_esurvey_, total_crop_area = get_total_aoi_stats(
+                df, crop_df)
             total_area = total_area_
             total_esurvey = total_esurvey_
 
@@ -78,11 +74,16 @@ def survey_json_creator(intersected_dataframes, config):
             geometry_geojson = json.loads(
                 gpd.GeoSeries(row['geometry']).to_json())
             geometry_geojson = clean_geometry(geometry_geojson)
+
             rep_properties = {
                 column: row[column] for column in df.columns if column not in ['Boundary Name', 'id', 'Esurvey Area', 'geometry']
             }
+           # replace NaN values with 0 
+            rep_properties = {k: 0 if math.isnan(
+                v) else v for k, v in rep_properties.items()}
 
-            Crop_Area = get_main_crop_area(rep_properties, config["crop"], config["report_type"])
+            Crop_Area = get_main_crop_area(
+                rep_properties, config["crop"], config["report_type"])
             Crop_Area = round(Crop_Area, 2)
             report_properties[boundary_id] = rep_properties
 
@@ -96,13 +97,10 @@ def survey_json_creator(intersected_dataframes, config):
             geo_obj['geometry'] = geometry_geojson
             geometry_objects.append(geo_obj)
 
-           
-                
         survey_obj['geometry'] = geometry_objects
         survey_obj['agg_stats'][config["date"]
                                 ][config["report_type"]] = report_properties
         survey_array.append(survey_obj)
-
 
     total_growers = get_esurvey_stats(config["esurvey_path"])
 
@@ -138,16 +136,16 @@ def get_total_aoi_stats(aoi_df, crop_df):
     reproject_df_crs(aoi_df)
     aoi_df['area'] = calculate_area(aoi_df, 'acre')
     total_area = aoi_df['area'].sum().round(2)
-    # drop the area column 
+    # drop the area column
     aoi_df.drop(columns=['area'], inplace=True)
-    
+
     total_crop_area = crop_df.sum().sum()
     total_crop_area = round(total_crop_area, 2)
 
     total_esurvey_area = 0
     if not aoi_df['Esurvey Area'].eq('-').any():
         total_esurvey_area = aoi_df['Esurvey Area'].sum().round(2)
-    
+
     return total_area, total_esurvey_area, total_crop_area
 
 
@@ -163,11 +161,10 @@ def get_main_crop_area(report_properties, crop, report_type):
     if report_type != "Crop Scan":
         total_crop_area = 0
         for key in report_properties:
-           total_crop_area += report_properties[key]
+            total_crop_area += report_properties[key]
         total_crop_area = round(total_crop_area, 2)
         return total_crop_area
-    
-    
+
     return report_properties[crop]
 
 

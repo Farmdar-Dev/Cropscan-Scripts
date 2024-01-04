@@ -59,7 +59,11 @@ def intersect_all(crop_dfs, boundary_dict, output_folder, unit, esurvey_path):
         for crop_df, crop_name in zip(crop_dfs, crop_names):
             intersection = gpd.overlay(
                 crop_df, boundary_df, how='intersection')
+            print("title", title)
+            print(boundary_df)
             intersection['crop'] = crop_name
+            print("after adding crop name", intersection)
+            print("df shape", intersection.shape)
             all_intersections.append(intersection)
 
     aggregated_data = aggregate_intersections(all_intersections, unit)
@@ -130,7 +134,7 @@ def make_boundary_aggregated_dfs(pivoted_data, boundary_tuples, esurvey_df, unit
 
     for title, boundary_df in boundary_tuples:
         boundary_df = add_esurvey_area(boundary_df, esurvey_df, unit)
-        combined_df = boundary_df.merge(pivoted_data, on=['layer_id', 'id'])
+        combined_df = boundary_df.merge(pivoted_data, on=['layer_id', 'id'], how='left')
         combined_df.geometry = combined_df['original_geometry']
         combined_df.drop(
             columns=['original_geometry', "layer_id"], inplace=True)
