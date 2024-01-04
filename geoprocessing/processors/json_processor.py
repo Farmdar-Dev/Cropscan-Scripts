@@ -126,7 +126,7 @@ def get_total_aoi_stats(aoi_df):
     total_area = aoi_df['area'].sum().round(2)
     
     total_esurvey_area = 0
-    if 'Esurvey Area' in aoi_df.columns:
+    if not aoi_df['Esurvey Area'].eq('-').any():
         total_esurvey_area = aoi_df['Esurvey Area'].sum().round(2)
     
     return total_area, total_esurvey_area
@@ -145,6 +145,7 @@ def get_main_crop_area(report_properties, crop, report_type):
         total_crop_area = 0
         for key in report_properties:
            total_crop_area += report_properties[key]
+        total_crop_area = round(total_crop_area, 2)
         return total_crop_area
     
     

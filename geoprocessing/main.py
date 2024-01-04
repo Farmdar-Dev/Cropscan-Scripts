@@ -9,6 +9,7 @@ from mapbox.tileset import create_tilesets
 
 def run_create_tilesets(dataframes, config):
     create_tilesets(dataframes, config)
+    pass
 
 def run():
     print("Reading data...")

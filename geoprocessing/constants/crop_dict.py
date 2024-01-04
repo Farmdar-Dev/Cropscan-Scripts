@@ -120,6 +120,8 @@ crop_dictionary = {
     1047: 'CP-90',
     1048: 'US-54',
     1049: 'CPF-239',
+    1050: 'CSSG-676',
+    1051: 'HS-2',
     
     #some more crops
     111: 'Artichoke',
