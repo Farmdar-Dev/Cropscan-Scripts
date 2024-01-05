@@ -119,7 +119,7 @@ def survey_json_creator(intersected_dataframes, config):
         "survey_array": survey_array
     }
     # save the json file
-    save_path = config["save_path"] + "Json/"
+    save_path = config["save_path"] + "/Json/"
     file_name = "survey.json"
 
     # Check if the directory exists
@@ -133,18 +133,20 @@ def survey_json_creator(intersected_dataframes, config):
 
 
 def get_total_aoi_stats(aoi_df, crop_df):
-    reproject_df_crs(aoi_df)
-    aoi_df['area'] = calculate_area(aoi_df, 'acre')
-    total_area = aoi_df['area'].sum().round(2)
+    #make a copy of aoi_df 
+    aoi_df_cpy = aoi_df.copy()
+    reproject_df_crs(aoi_df_cpy)
+    aoi_df_cpy['area'] = calculate_area(aoi_df_cpy, 'acre')
+    total_area = aoi_df_cpy['area'].sum().round(2)
     # drop the area column
-    aoi_df.drop(columns=['area'], inplace=True)
+    aoi_df_cpy.drop(columns=['area'], inplace=True)
 
     total_crop_area = crop_df.sum().sum()
     total_crop_area = round(total_crop_area, 2)
 
     total_esurvey_area = 0
-    if not aoi_df['Esurvey Area'].eq('-').any():
-        total_esurvey_area = aoi_df['Esurvey Area'].sum().round(2)
+    if not aoi_df_cpy['Esurvey Area'].eq('-').any():
+        total_esurvey_area = aoi_df_cpy['Esurvey Area'].sum().round(2)
 
     return total_area, total_esurvey_area, total_crop_area
 
