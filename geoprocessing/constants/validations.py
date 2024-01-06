@@ -13,8 +13,8 @@ report_type_names = [
 ]
 
 crop_names = [
-    "Urban", "Cotton", "Maize", "Others", "Orchards", "Juaar", "Rice",
-    "Other Vegetation", "Chillis", "Musturd", "Canola", "Banana", "Tobacco",
+    "Urban", "Cotton", "Maize", "Orchards", "Juaar", "Rice",
+     "Chillis", "Musturd", "Canola", "Banana", "Tobacco",
     "Wheat", "Tomato", "Mountain", "Sugarcane", "Watermelon", "Grapes", "Potato"
 ]
 
