@@ -17,3 +17,18 @@ crop_names = [
     "Other Vegetation", "Chillis", "Musturd", "Canola", "Banana", "Tobacco",
     "Wheat", "Tomato", "Mountain", "Sugarcane", "Watermelon", "Grapes", "Potato"
 ]
+
+boundary_titles = [
+    "aoi",
+    "district",
+    "tehsil",
+    "uc",
+    "gates",
+    "deh",
+    "zone",
+    "village",
+    "fields",
+    "Dekab Region",
+    "Dekab Territory"
+]
+
