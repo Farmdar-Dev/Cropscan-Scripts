@@ -13,19 +13,20 @@ def add_esurvey_area(boundary_df, esurvey_path, unit):
     Adds the area of the boundary from the e-survey data to the boundary dataframe.
     """
     if esurvey_path == "":
-         boundary_df[ESURVEY_COLUMN] = "-"
-         return boundary_df
-    
-    esurvey_df = gpd.read_file(esurvey_path)    
+        boundary_df[ESURVEY_COLUMN] = "-"
+        return boundary_df
+
+    esurvey_df = gpd.read_file(esurvey_path)
     reproject_df_crs(esurvey_df)
     boundary_df_cpy = boundary_df.copy()
     intersection = gpd.overlay(boundary_df_cpy, esurvey_df, how='intersection')
     intersection[ESURVEY_COLUMN] = calculate_area(intersection, unit)
-    intersection = intersection.groupby(['id_1'])[ESURVEY_COLUMN].sum().round(2).reset_index()
+    intersection = intersection.groupby(
+        ['id_1'])[ESURVEY_COLUMN].sum().round(2).reset_index()
     intersection = intersection.rename({'id_1': 'id'}, axis='columns')
 
-
-    boundary_df = boundary_df.merge(intersection, on='id', how='left').fillna(0)
+    boundary_df = boundary_df.merge(
+        intersection, on='id', how='left').fillna(0)
     return boundary_df
 
 
@@ -38,17 +39,20 @@ def intersect_all(crop_dfs, boundary_dict, output_folder, unit, esurvey_path):
     # Create tuples of (title, dataframe)
     boundary_tuples = [(title, gpd.read_file(path))
                        for title, path in boundary_dict.items()]
-    #esurvey_df = gpd.read_file(esurvey)
+    # esurvey_df = gpd.read_file(esurvey)
 
     # Reproject CRS if necessary and other preprocessing
     for title, boundary_df in boundary_tuples:
         boundary_df['original_geometry'] = boundary_df.geometry
         # Unique identifier for each boundary
+        # plot boundary_df
+        # boundary_df.plot().imshow()
         boundary_df['layer_id'] = id(boundary_df)
         reproject_df_crs(boundary_df)
+        # boundary_df.plot().imshow()
 
     reproject_dfs_crs(crop_dfs)
-    #reproject_df_crs(esurvey_df)
+    # reproject_df_crs(esurvey_df)
 
     # Deriving crop names from the crop dataframes
     crop_names = [crop_dictionary.get(
@@ -130,7 +134,8 @@ def make_boundary_aggregated_dfs(pivoted_data, boundary_tuples, esurvey_df, unit
 
     for title, boundary_df in boundary_tuples:
         boundary_df = add_esurvey_area(boundary_df, esurvey_df, unit)
-        combined_df = boundary_df.merge(pivoted_data, on=['layer_id', 'id'])
+        combined_df = boundary_df.merge(
+            pivoted_data, on=['layer_id', 'id'], how='left')
         combined_df.geometry = combined_df['original_geometry']
         combined_df.drop(
             columns=['original_geometry', "layer_id"], inplace=True)
