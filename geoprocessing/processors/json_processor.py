@@ -42,6 +42,7 @@ def survey_json_creator(intersected_dataframes, config):
 
     total_area = ""
     total_esurvey = ""
+    total_crop_area = ""
     for df in intersected_dataframes:
         survey_title = df['survey_title'].iloc[0]
         df = df.drop(columns=['survey_title'])
