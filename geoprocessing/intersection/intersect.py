@@ -113,7 +113,7 @@ def save_combined_as_geojson(df, boundary_tuples, output_folder, esurvey_df, uni
     for title, boundary_df in boundary_tuples:
         boundary_df = add_esurvey_area(boundary_df, esurvey_df, unit)
         output_path = os.path.join(output_folder, f'{title}.geojson')
-        combined_df = boundary_df.merge(df, on=['layer_id', 'id'])
+        combined_df = boundary_df.merge(df, on=['layer_id', 'id'],how = 'left')
         combined_df.geometry = combined_df['original_geometry']
         combined_df.drop(
             columns=['original_geometry', "layer_id"], inplace=True)
