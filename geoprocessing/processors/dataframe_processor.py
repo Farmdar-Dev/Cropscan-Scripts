@@ -37,6 +37,36 @@ def reproject_dfs_crs(dataframes: list, crs=None):
     """
     [reproject_df_crs(df, crs) for df in dataframes]
     
+    
+def choose_utm_crs(gdf1, gdf2):
+    utm_41_crs = 'EPSG:32641'
+    utm_42_crs = 'EPSG:32642'
+    utm_43_crs = 'EPSG:32643'
+    
+
+    if gdf1.crs and gdf2.crs:
+        if gdf1.crs.equals(gdf2.crs):
+            # Both GeoDataFrames have the same CRS
+            print("Both GeoDataFrames have the same CRS:", gdf1.crs)
+        elif gdf1.crs in [utm_42_crs, utm_41_crs] or gdf2.crs in [utm_42_crs, utm_41_crs]:
+            # Choose UTM 41 for both GeoDataFrames
+            gdf1.crs = utm_41_crs
+            gdf2.crs = utm_41_crs
+            print("Changed CRS to UTM 41 for both GeoDataFrames.")
+        elif gdf1.crs in [utm_42_crs, utm_43_crs] or gdf2.crs in [utm_42_crs, utm_43_crs]:
+            # Choose UTM 43 for both GeoDataFrames if neither is UTM 41
+            gdf1.crs = utm_43_crs
+            gdf2.crs = utm_43_crs
+            print("Changed CRS to UTM 43 for both GeoDataFrames.")
+        else:
+            print("CRS is different and doesn't involve UTM 42 or UTM 41. No change made.")
+    else:
+        print("CRS information not found in one or both GeoDataFrames.")
+    
+    
+    
+    
+    
 
 def split_dfs_by_predicted(merged_dataframe):
     """

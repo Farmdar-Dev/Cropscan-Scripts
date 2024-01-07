@@ -4,7 +4,7 @@ import os
 from constants.crop_dict import crop_dictionary
 from utils.area_calculation import calculate_area
 from constants.generic import PREDICTED_COLUMN, ESURVEY_COLUMN
-from processors.dataframe_processor import reproject_dfs_crs, reproject_df_crs
+from processors.dataframe_processor import reproject_dfs_crs, reproject_df_crs, choose_utm_crs
 import geopandas as gpd
 
 
@@ -61,6 +61,7 @@ def intersect_all(crop_dfs, boundary_dict, output_folder, unit, esurvey_path):
     all_intersections = []
     for title, boundary_df in boundary_tuples:
         for crop_df, crop_name in zip(crop_dfs, crop_names):
+            choose_utm_crs(crop_df, boundary_df)
             intersection = gpd.overlay(
                 crop_df, boundary_df, how='intersection')
             intersection['crop'] = crop_name
