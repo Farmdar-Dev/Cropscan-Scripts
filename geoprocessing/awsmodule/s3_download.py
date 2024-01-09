@@ -66,6 +66,3 @@ def download_esurvey(bucket, output_path, esurvey_s3, access_key, secret_key):
 
     return file_path
 
-# if __name__ == "__main__":
-#     test_path = ""
-#     download_file(test_path)
