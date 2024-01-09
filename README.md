@@ -56,23 +56,29 @@ python3 main.py
 
 ```bash
 {
-  "user_name": "Omni",
-  "season": "2023",
-  "crop": "Sugarcane",
-  "report_type": "SOM",
-  "unit": "acre",
-  "shapefile_paths": [
-    "/Users/mac/Desktop/Farmdar/Cropscan-Scripts/test_data/Omni/Omni_OM_aoi_level/Omni_OM_aoi_level.shp"
-  ],
-  "date": "2023-08-21",
-  "boundary_details": {
-    "aoi": "/Users/mac/Desktop/Farmdar/Cropscan-Scripts/test_data/Omni/omni_aoiS.geojson",
-    "gates" : "Path to gates file"
-  },
-  "save_path": "/Users/mac/Desktop/Farmdar/Cropscan-Scripts/geoprocessing",
-  "esurvey_path": ""
+      "bucket": "farmdar-classification",
+    "shp_name_s3": "s3://farmdar-classification/plant-health/test/ASML_PlantHealth.shp",
+    "user_name": "ASML",
+    "season": "2023",
+    "crop": "Sugarcane",
+    "report_type": "Plant Health",
+    "unit": "acre",
+    
+    "date": "2023-11-11",
+    "boundary_details": {
+      "aoi": "s3://farmdar-classification/plant-health/test/asml_aoi.geojson",
+      "tehsil": "s3://farmdar-classification/plant-health/test/asml_tehsil.geojson",
+      "gates" : "s3://farmdar-classification/plant-health/test/asml_gates.geojson",
+      "uc": "s3://farmdar-classification/plant-health/test/asml_uc.geojson"
+    },
+    "save_path": "C:/Users/Administrator/Desktop/ASML/New folder",
+    "esurvey_path": ""
 }
 ```
+
+## .env
+AWS_ACCESS_KEY_ID=asdfg
+AWS_SECRET_ACCESS_KEY=12345
 
 # Steps to run.
 Make a file named config.json. 
