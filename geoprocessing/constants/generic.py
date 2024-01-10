@@ -7,3 +7,10 @@ AREA_CONVERSION_FACTORS = {
 PREDICTED_COLUMN = 'predicted'
 ESURVEY_COLUMN = 'Esurvey Area'
 TARGET_CRS = 'EPSG:4326'
+
+
+# utm crs
+
+utm_41_crs = 'EPSG:32641'
+utm_42_crs = 'EPSG:32642'
+utm_43_crs = 'EPSG:32643'

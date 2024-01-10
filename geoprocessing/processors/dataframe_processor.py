@@ -4,6 +4,7 @@ from constants.generic import PREDICTED_COLUMN
 from utils.area_calculation import calculate_area
 from constants.crop_dict import crop_dictionary
 from constants.color_dict import color_id
+from constants.generic import utm_41_crs, utm_42_crs, utm_43_crs
 
 def build_dataframe(filepaths: list):
     """
@@ -39,21 +40,17 @@ def reproject_dfs_crs(dataframes: list, crs=None):
     
     
 def choose_utm_crs(gdf1, gdf2):
-    utm_41_crs = 'EPSG:32641'
-    utm_42_crs = 'EPSG:32642'
-    utm_43_crs = 'EPSG:32643'
     
-
     if gdf1.crs and gdf2.crs:
         if gdf1.crs.equals(gdf2.crs):
             # Both GeoDataFrames have the same CRS
             print("Both GeoDataFrames have the same CRS:", gdf1.crs)
-        elif gdf1.crs in [utm_42_crs, utm_41_crs] or gdf2.crs in [utm_42_crs, utm_41_crs]:
+        elif gdf1.crs in [utm_42_crs, utm_41_crs] and gdf2.crs in [utm_42_crs, utm_41_crs]:
             # Choose UTM 41 for both GeoDataFrames
             gdf1.crs = utm_41_crs
             gdf2.crs = utm_41_crs
             print("Changed CRS to UTM 41 for both GeoDataFrames.")
-        elif gdf1.crs in [utm_42_crs, utm_43_crs] or gdf2.crs in [utm_42_crs, utm_43_crs]:
+        elif gdf1.crs in [utm_42_crs, utm_43_crs] and gdf2.crs in [utm_42_crs, utm_43_crs]:
             # Choose UTM 43 for both GeoDataFrames if neither is UTM 41
             gdf1.crs = utm_43_crs
             gdf2.crs = utm_43_crs
