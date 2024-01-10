@@ -41,6 +41,12 @@ def reproject_dfs_crs(dataframes: list, crs=None):
     
 def choose_utm_crs(gdf1, gdf2):
     
+    """
+    checks crs of two geodataframes, if they are same, does nothing
+    if one is utm 42 and other is utm 41, converts both to utm 41
+    if one is utm 43 and other is utm 42, converts both to utm 43
+    """
+    
     if not gdf1.crs or not gdf2.crs:
         print("CRS information not found in one or both GeoDataFrames.")
         return
