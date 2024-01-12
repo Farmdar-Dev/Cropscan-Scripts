@@ -23,7 +23,6 @@ def download_shp_file(bucket, output_path, shps, access_key, secret_key):
         response = s3_client.list_objects_v2(
                         Bucket=bucket,
                         Prefix=f"{pre}.")
-        print(f"{pre}.")
         files2down = []
         for content in response.get('Contents', []):
             file_name = content['Key'].replace(pre, '').split('.')

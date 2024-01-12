@@ -76,11 +76,11 @@ python3 main.py
 
 ## .env
 ```bash
-{
+
 AWS_ACCESS_KEY_ID=asdf
 AWS_SECRET_ACCESS_KEY=1234
 bucket=buck
-}
+
 ```
 
 
