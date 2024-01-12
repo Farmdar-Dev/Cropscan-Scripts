@@ -56,7 +56,7 @@ def intersect_all(crop_dfs, boundary_tuples, output_folder, unit, esurvey_path):
 
     # Deriving crop names from the crop dataframes
     crop_names = [crop_dictionary.get(
-        df[PREDICTED_COLUMN].iloc[0], 'Unknown Crop') for df in crop_dfs]
+        int(df[PREDICTED_COLUMN].iloc[0]), 'Unknown Crop') for df in crop_dfs]
 
     all_intersections = []
     for title, boundary_df in boundary_tuples:
