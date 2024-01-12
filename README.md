@@ -56,7 +56,6 @@ python3 main.py
 
 ```bash
 {
-      "bucket": "farmdar-classification",
     "shp_name_s3": "s3://farmdar-classification/plant-health/test/ASML_PlantHealth.shp",
     "user_name": "ASML",
     "season": "2023",
@@ -69,16 +68,22 @@ python3 main.py
       "aoi": "s3://farmdar-classification/plant-health/test/asml_aoi.geojson",
       "tehsil": "s3://farmdar-classification/plant-health/test/asml_tehsil.geojson",
       "gates" : "s3://farmdar-classification/plant-health/test/asml_gates.geojson",
-      "uc": "s3://farmdar-classification/plant-health/test/asml_uc.geojson"
-    },
+      "uc": "s3://farmdar-classification/plant-health/test/asml_uc.geojson"},
     "save_path": "C:/Users/Administrator/Desktop/ASML/New folder",
     "esurvey_path": ""
 }
 ```
 
 ## .env
-AWS_ACCESS_KEY_ID=asdfg
-AWS_SECRET_ACCESS_KEY=12345
+```bash
+{
+AWS_ACCESS_KEY_ID=asdf
+AWS_SECRET_ACCESS_KEY=1234
+bucket=buck
+}
+```
+
+
 
 # Steps to run.
 Make a file named config.json. 

@@ -4,6 +4,7 @@ import geopandas as gpd
 import os
 from utils.area_calculation import calculate_area
 from processors.dataframe_processor import reproject_df_crs
+from awsmodule.s3_upload import upload_files
 
 
 def read_config_json(file_path):
@@ -130,6 +131,9 @@ def survey_json_creator(intersected_dataframes, config):
     full_path = os.path.join(save_path, file_name)
     with open(full_path, 'w') as outfile:
         json.dump(survey_json, outfile)
+        s3_path = upload_files(config["s3_output_folder"], full_path, "Json")
+    
+
 
 
 def get_total_aoi_stats(aoi_df, crop_df):

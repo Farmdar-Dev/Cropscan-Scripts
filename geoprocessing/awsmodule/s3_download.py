@@ -10,11 +10,20 @@ def download_shp_file(bucket, output_path, shps, access_key, secret_key):
     s3_client = session.client('s3')
     prefixes = shps.split(',')
     shp_paths = []
+    folder_name = os.path.split(prefixes[0].split('.')[0].split(f"{bucket}/")[-1])[-1]
+    final_folder_path = os.path.join(output_path, folder_name)
+    if not os.path.exists(final_folder_path):
+        os.makedirs(final_folder_path)
     for i in prefixes:
         pre = i.split('.')[0].split(f"{bucket}/")[-1]
+        folder_name = os.path.split(pre)[-1]
+        final_folder_path = os.path.join(output_path, folder_name)
+        if not os.path.exists(final_folder_path):
+            os.makedirs(final_folder_path)
         response = s3_client.list_objects_v2(
                         Bucket=bucket,
-                        Prefix=pre)
+                        Prefix=f"{pre}.")
+        print(f"{pre}.")
         files2down = []
         for content in response.get('Contents', []):
             file_name = content['Key'].replace(pre, '').split('.')
@@ -24,7 +33,7 @@ def download_shp_file(bucket, output_path, shps, access_key, secret_key):
         shp_path = None
         for i in files2down:
             file = os.path.split(i)[-1]
-            file_path = os.path.join(output_path, file)
+            file_path = os.path.join(final_folder_path, file)
             s3_client.download_file(bucket, i, file_path)
             if file_path.endswith(".shp"):
                 shp_path = file_path
@@ -36,6 +45,11 @@ def download_boundaries(bucket, output_path, aoi_dict, access_key, secret_key):
                                         aws_secret_access_key = secret_key)
     s3_client = session.client('s3')
     boundaries = {}
+    boundary_file_name = aoi_dict[list(aoi_dict.keys())[0]].split(f"{bucket}/")[-1].split('.')[0]
+    folder_name = os.path.split(boundary_file_name)[-1]
+    final_folder_path = os.path.join(output_path, folder_name)
+    if not os.path.exists(final_folder_path):
+        os.makedirs(final_folder_path)
     for key in aoi_dict:
         pre = aoi_dict[key].split(f"{bucket}/")[-1].split('.')[0]
         response = s3_client.list_objects_v2(
@@ -50,7 +64,7 @@ def download_boundaries(bucket, output_path, aoi_dict, access_key, secret_key):
 
         for i in files2down:
             file = os.path.split(i)[-1]
-            file_path = os.path.join(output_path, file)
+            file_path = os.path.join(final_folder_path, file)
             s3_client.download_file(bucket, i, file_path)
         boundaries[key] = file_path
     return boundaries

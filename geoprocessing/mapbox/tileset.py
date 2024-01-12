@@ -37,7 +37,7 @@ def L1_tilesets(df_list, config):
         id = crop_df[PREDICTED_COLUMN].iloc[0]
         crop_name = crop_dictionary[id]
         delete_predictions(crop_df)
-        to_geojson(crop_df, config['save_path'], crop_name)  
+        to_geojson(crop_df, config['save_path'], crop_name, config["s3_output_folder"])  
         
             
 def other_tilesets(df_list, config):
@@ -54,7 +54,7 @@ def other_tilesets(df_list, config):
     delete_predictions(one_df)
     add_index(one_df)
     calculate_area(one_df, config["unit"])
-    to_geojson(one_df, config['save_path'], config['report_type'])
+    to_geojson(one_df, config['save_path'], config['report_type'], config["s3_output_folder"])
 
 
             

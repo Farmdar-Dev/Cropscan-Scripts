@@ -24,9 +24,10 @@ def run():
         load_dotenv()
         aws_access_key_id = os.getenv("AWS_ACCESS_KEY_ID")
         aws_secret_access_key = os.getenv("AWS_SECRET_ACCESS_KEY")
+        bucket = os.getenv("bucket")
         config = read_config_json("D:/farmdar/dashboard/tileset/Cropscan-Scripts/config.json")
         print("Downloading shapefile...")
-        shape_file_path = download_shp_file(config["bucket"], config["save_path"], config["shp_name_s3"], aws_access_key_id, aws_secret_access_key)
+        shape_file_path = download_shp_file(bucket, config["save_path"], config["shp_name_s3"], aws_access_key_id, aws_secret_access_key)
         shapefiles = process_shapefiles(shape_file_path)
         dataframes_by_crop = split_dfs_by_predicted(shapefiles)
         deep_copied_dataframes = [copy.deepcopy(
@@ -44,12 +45,12 @@ def run():
         tileset_process.start()
         print("Downloading boundaries...")
         
-        boundary_dict = download_boundaries(config["bucket"], config["save_path"], config["boundary_details"], aws_access_key_id, aws_secret_access_key)
+        boundary_dict = download_boundaries(bucket, config["save_path"], config["boundary_details"], aws_access_key_id, aws_secret_access_key)
         if config["esurvey_path"] == "":
             esurvey_path = ""
         else:
             print("Downloading esurvey...")
-            esurvey_path = download_esurvey(config["bucket"], config["save_path"], config["esurvey_path"], aws_access_key_id, aws_secret_access_key)
+            esurvey_path = download_esurvey(bucket, config["save_path"], config["esurvey_path"], aws_access_key_id, aws_secret_access_key)
         print("Creating survey JSON...")
         intersected_dataframes = intersect_all(
             dataframes_by_crop, boundary_dict, "output", config["unit"], esurvey_path)
