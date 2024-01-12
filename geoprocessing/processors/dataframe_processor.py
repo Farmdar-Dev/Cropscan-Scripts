@@ -9,7 +9,7 @@ from constants.color_dict import color_id
 
 
 def to_tuple(boundary_dict):
-    # Create tuples of (title, dataframe)
+    # Create list of tuples of (title, dataframe)
     boundary_tuples = [(title, gpd.read_file(path))
     for title, path in boundary_dict.items()]
     
@@ -18,18 +18,21 @@ def to_tuple(boundary_dict):
         boundary_df['original_geometry'] = boundary_df.geometry
         boundary_df['layer_id'] = id(boundary_df)
         
-    priority_crs = None
+    priority_crs = 'WGS 84 / UTM zone 42N'
 
     for title, boundary_df in boundary_tuples:
-        boundary_df = boundary_df.to_crs(boundary_df.estimate_utm_crs())
+        estimated_boundary_crs = boundary_df.estimate_utm_crs()
+        print(estimated_boundary_crs)
+        boundary_df.to_crs(estimated_boundary_crs, inplace= True)
         
-        if boundary_df.crs.name != 'WGS 84 / UTM zone 42N':
+        if boundary_df.crs.name != priority_crs:
             priority_crs = boundary_df.crs
             break
 
-    if priority_crs is not None:
+    
+    if priority_crs != 'WGS 84 / UTM zone 42N':
         for title, boundary_df in boundary_tuples:
-            boundary_df = boundary_df.to_crs(priority_crs)
+             boundary_df.to_crs(estimated_boundary_crs, inplace= True)
     
     return boundary_tuples, priority_crs 
     #the priority crs should ideally pass onto the reprojection function 

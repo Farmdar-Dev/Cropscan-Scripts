@@ -55,12 +55,15 @@ def intersect_all(crop_dfs, boundary_tuples, output_folder, unit, esurvey_path):
     # reproject_df_crs(esurvey_df)
 
     # Deriving crop names from the crop dataframes
+    
     crop_names = [crop_dictionary.get(
-        df[PREDICTED_COLUMN].iloc[0], 'Unknown Crop') for df in crop_dfs]
+        int(df[PREDICTED_COLUMN].iloc[0]), 'Unknown Crop') for df in crop_dfs]
 
     all_intersections = []
     for title, boundary_df in boundary_tuples:
         for crop_df, crop_name in zip(crop_dfs, crop_names):
+            print( "crop df crs", crop_df.crs)
+            print( "boundary df crs" , boundary_df.crs)
             intersection = gpd.overlay(
                 crop_df, boundary_df, how='intersection')
             intersection['crop'] = crop_name
