@@ -5,6 +5,37 @@ from utils.area_calculation import calculate_area
 from constants.crop_dict import crop_dictionary
 from constants.color_dict import color_id
 
+
+
+
+def to_tuple(boundary_dict):
+    # Create tuples of (title, dataframe)
+    boundary_tuples = [(title, gpd.read_file(path))
+    for title, path in boundary_dict.items()]
+    
+    # Reproject CRS if necessary and other preprocessing
+    for title, boundary_df in boundary_tuples:
+        boundary_df['original_geometry'] = boundary_df.geometry
+        boundary_df['layer_id'] = id(boundary_df)
+        
+    priority_crs = None
+
+    for title, boundary_df in boundary_tuples:
+        boundary_df = boundary_df.to_crs(boundary_df.estimate_utm_crs())
+        
+        if boundary_df.crs.name != 'WGS 84 / UTM zone 42N':
+            priority_crs = boundary_df.crs
+            break
+
+    if priority_crs is not None:
+        for title, boundary_df in boundary_tuples:
+            boundary_df = boundary_df.to_crs(priority_crs)
+    
+    return boundary_tuples, priority_crs 
+    #the priority crs should ideally pass onto the reprojection function 
+    #and be stored there rather than be sent to main
+
+
 def build_dataframe(filepaths: list):
     """
     Converts file paths into dataframes

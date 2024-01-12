@@ -6,7 +6,7 @@ from multiprocessing import Queue
 from processors.json_processor import read_config_json, survey_json_creator
 from processors.shp_proccesor import process_shapefiles
 from intersection.intersect import intersect_all
-from processors.dataframe_processor import split_dfs_by_predicted
+from processors.dataframe_processor import split_dfs_by_predicted, to_tuple
 from mapbox.tileset import create_tilesets
 
 
@@ -20,8 +20,11 @@ def run_create_tilesets(dataframes, config, error_queue):
 def run():
     print("Reading data...")
     try:
+        
+        boundaries_tuples, P_crs = to_tuple(config["boundary_details"])
+        
         config = read_config_json("config.json")
-        shapefiles = process_shapefiles(config["shapefile_paths"])
+        shapefiles = process_shapefiles(config["shapefile_paths"], P_crs)
         dataframes_by_crop = split_dfs_by_predicted(shapefiles)
         deep_copied_dataframes = [copy.deepcopy(
             df) for df in dataframes_by_crop]
@@ -39,7 +42,7 @@ def run():
 
         print("Creating survey JSON...")
         intersected_dataframes = intersect_all(
-            dataframes_by_crop, config["boundary_details"], "output", config["unit"], config["esurvey_path"])
+            dataframes_by_crop, boundaries_tuples, "output", config["unit"], config["esurvey_path"])
         survey_json_creator(intersected_dataframes, config)
 
         tileset_process.join()

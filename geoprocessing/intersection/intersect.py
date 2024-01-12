@@ -30,28 +30,28 @@ def add_esurvey_area(boundary_df, esurvey_path, unit):
     return boundary_df
 
 
-def intersect_all(crop_dfs, boundary_dict, output_folder, unit, esurvey_path):
+def intersect_all(crop_dfs, boundary_tuples, output_folder, unit, esurvey_path):
     """
     Intersects each crop dataframe with each boundary dataframe and aggregates the results.
     Utilizes a tuple of (title, dataframe) to maintain the association between the boundary dataframes and their titles.
     """
 
-    # Create tuples of (title, dataframe)
-    boundary_tuples = [(title, gpd.read_file(path))
-                       for title, path in boundary_dict.items()]
+    # # Create tuples of (title, dataframe)
+    # boundary_tuples = [(title, gpd.read_file(path))
+    #                    for title, path in boundary_dict.items()]
     # esurvey_df = gpd.read_file(esurvey)
 
-    # Reproject CRS if necessary and other preprocessing
-    for title, boundary_df in boundary_tuples:
-        boundary_df['original_geometry'] = boundary_df.geometry
-        # Unique identifier for each boundary
-        # plot boundary_df
-        # boundary_df.plot().imshow()
-        boundary_df['layer_id'] = id(boundary_df)
-        reproject_df_crs(boundary_df)
-        # boundary_df.plot().imshow()
+    # # Reproject CRS if necessary and other preprocessing
+    # for title, boundary_df in boundary_tuples:
+    #     boundary_df['original_geometry'] = boundary_df.geometry
+    #     # Unique identifier for each boundary
+    #     # plot boundary_df
+    #     # boundary_df.plot().imshow()
+    #     boundary_df['layer_id'] = id(boundary_df)
+    #     reproject_df_crs(boundary_df)
+    #     # boundary_df.plot().imshow()
 
-    reproject_dfs_crs(crop_dfs)
+    #reproject_dfs_crs(crop_dfs)
     # reproject_df_crs(esurvey_df)
 
     # Deriving crop names from the crop dataframes
