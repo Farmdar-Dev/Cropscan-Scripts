@@ -12,16 +12,23 @@ def to_tuple(boundary_dict):
     # Create tuples of (title, dataframe)
     boundary_tuples = [(title, gpd.read_file(path))
     for title, path in boundary_dict.items()]
-    
+    print("tuples")
+    for title, boundary_df in boundary_tuples:
+        print("titles", title)
+
+
+    print("Reprojecting boundaries.")
     # Reproject CRS if necessary and other preprocessing
     for title, boundary_df in boundary_tuples:
         boundary_df['original_geometry'] = boundary_df.geometry
         boundary_df['layer_id'] = id(boundary_df)
         
+    # TODO: move to constants if all this works
     priority_crs = 'WGS 84 / UTM zone 42N'
 
     for title, boundary_df in boundary_tuples:
-        boundary_df = boundary_df.to_crs(boundary_df.estimate_utm_crs())
+        # boundary_df = boundary_df.to_crs(boundary_df.estimate_utm_crs())
+        boundary_df.to_crs(boundary_df.estimate_utm_crs(), inplace = True)
         
         if boundary_df.crs.name != priority_crs:
             priority_crs = boundary_df.crs
@@ -29,12 +36,27 @@ def to_tuple(boundary_dict):
 
     if priority_crs != 'WGS 84 / UTM zone 42N':
         for title, boundary_df in boundary_tuples:
-            boundary_df = boundary_df.to_crs(priority_crs)
+            # boundary_df = boundary_df.to_crs(priority_crs)
+            boundary_df.to_crs(boundary_df.estimate_utm_crs(), inplace = True)
     
+    print("Preprocessing boundaries.")
+    boundary_tuples = drop_duplicates_tuple(boundary_tuples)
+    
+    print("Preprocessing complete.")
     return boundary_tuples, priority_crs 
     #the priority crs should ideally pass onto the reprojection function 
     #and be stored there rather than be sent to main
 
+
+def drop_duplicates_tuple(df_tuple):
+
+    df_tuple_simplified = []
+
+    for title, df in df_tuple:
+        df = df.drop_duplicates(ignore_index=True)
+        # df_tuple_simplified.append([(title, df)])
+        df_tuple_simplified.append((title, df))
+    return df_tuple_simplified  
 
 def build_dataframe(filepaths: list):
     """
@@ -80,7 +102,6 @@ def split_dfs_by_predicted(merged_dataframe):
 
     # changing datatype of column 'predicted' to integer
     merged_dataframe[PREDICTED_COLUMN] = merged_dataframe[PREDICTED_COLUMN].astype(int)
-    
     #gathering unique crop ids
     unique_crops = merged_dataframe[PREDICTED_COLUMN].unique()
 
@@ -105,6 +126,7 @@ def assign_class(df):
     """
     df[PREDICTED_COLUMN] = df[PREDICTED_COLUMN].astype(int)
     df['Class'] = df[PREDICTED_COLUMN].apply(lambda x : crop_dictionary[x])
+    return df
     
 def assign_color_id(df):
     """
@@ -116,6 +138,7 @@ def assign_color_id(df):
     """
     df[PREDICTED_COLUMN] = df[PREDICTED_COLUMN].astype(int)
     df['c_id'] = df[PREDICTED_COLUMN].apply(lambda x : color_id[x])
+    return df
     
 def delete_predictions(df):
     """
@@ -126,6 +149,7 @@ def delete_predictions(df):
     manipulated dataframe
     """
     del df[PREDICTED_COLUMN]
+    return df
     
 def add_index(df):
     """
@@ -136,6 +160,7 @@ def add_index(df):
     manipulated dataframe
     """
     df.insert(0, 'id', range(1, 1 + len(df)))
+    return df
     
 def merge_df(list_of_df):
     """

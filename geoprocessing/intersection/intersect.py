@@ -21,8 +21,7 @@ def add_esurvey_area(boundary_df, esurvey_path, unit):
     boundary_df_cpy = boundary_df.copy()
     intersection = gpd.overlay(boundary_df_cpy, esurvey_df, how='intersection')
     intersection[ESURVEY_COLUMN] = calculate_area(intersection, unit)
-    intersection = intersection.groupby(
-        ['id_1'])[ESURVEY_COLUMN].sum().round(2).reset_index()
+    intersection = intersection.groupby(['id_1'])[ESURVEY_COLUMN].sum().reset_index()
     intersection = intersection.rename({'id_1': 'id'}, axis='columns')
 
     boundary_df = boundary_df.merge(
@@ -36,36 +35,20 @@ def intersect_all(crop_dfs, boundary_tuples, output_folder, unit, esurvey_path):
     Utilizes a tuple of (title, dataframe) to maintain the association between the boundary dataframes and their titles.
     """
 
-    # # Create tuples of (title, dataframe)
-    # boundary_tuples = [(title, gpd.read_file(path))
-    #                    for title, path in boundary_dict.items()]
-    # esurvey_df = gpd.read_file(esurvey)
-
-    # # Reproject CRS if necessary and other preprocessing
-    # for title, boundary_df in boundary_tuples:
-    #     boundary_df['original_geometry'] = boundary_df.geometry
-    #     # Unique identifier for each boundary
-    #     # plot boundary_df
-    #     # boundary_df.plot().imshow()
-    #     boundary_df['layer_id'] = id(boundary_df)
-    #     reproject_df_crs(boundary_df)
-    #     # boundary_df.plot().imshow()
-
-    #reproject_dfs_crs(crop_dfs)
-    # reproject_df_crs(esurvey_df)
-
     # Deriving crop names from the crop dataframes
-    crop_names = [crop_dictionary.get(
-        int(df[PREDICTED_COLUMN].iloc[0]), 'Unknown Crop') for df in crop_dfs]
+    crop_names = [crop_dictionary.get(int(df[PREDICTED_COLUMN].iloc[0]), 'Unknown Crop') for df in crop_dfs]
 
     all_intersections = []
     for title, boundary_df in boundary_tuples:
         for crop_df, crop_name in zip(crop_dfs, crop_names):
-            intersection = gpd.overlay(
-                crop_df, boundary_df, how='intersection')
+            #crop_df["acreage"] = calculate_area(crop_df, unit)
+            print("interescting" ,crop_df, "with", boundary_df)
+            intersection = gpd.overlay(boundary_df, crop_df, keep_geom_type=True, make_valid=True)
             intersection['crop'] = crop_name
-            all_intersections.append(intersection)
-
+            intersection["acreage"] = calculate_area(intersection, unit)
+            _intersection = drop_empty_areas(intersection)
+            all_intersections.append(_intersection)
+    
     aggregated_data = aggregate_intersections(all_intersections, unit)
     pivoted_data = pivot_data(aggregated_data)
 
@@ -74,15 +57,26 @@ def intersect_all(crop_dfs, boundary_tuples, output_folder, unit, esurvey_path):
 
     return make_boundary_aggregated_dfs(pivoted_data, boundary_tuples, esurvey_path, unit)
 
+def drop_empty_areas(df):
+    rows_to_drop = []
+
+    for index, row in df.iterrows():
+        if row['acreage'] == 0.00:
+            rows_to_drop.append(index)
+    df = df.drop(rows_to_drop, axis=0)
+    df = df.reset_index(drop=True)
+    
+    return df
 
 def aggregate_intersections(intersections, unit):
     """
-    Aggregates intersection data to calculate the total acreage of each crop in each polygon.
+    Aggregates intersection data to sum the total acreage of each crop in each polygon.
     Uses the unique boundary identifier for accurate aggregation.
     """
+    #[drop_empty_areas(interesction) for interesction in intersections]
     aggregated_data = pd.concat(intersections)
-    aggregated_data['acreage'] = calculate_area(aggregated_data, unit)
-    return aggregated_data.groupby(['layer_id', 'id', 'crop'])['acreage'].sum().round(2).reset_index()
+   # aggregated_data['acreage'] = calculate_area(aggregated_data, unit)
+    return aggregated_data.groupby(['layer_id', 'id', 'crop'])['acreage'].sum().reset_index()
 
 
 def pivot_data(df):

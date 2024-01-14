@@ -19,44 +19,44 @@ def run_create_tilesets(dataframes, config, error_queue):
 
 def run():
     print("Reading data...")
-    try:
+    
         
-        boundaries_tuples, P_crs = to_tuple(config["boundary_details"])
-        
-        config = read_config_json("config.json")
-        shapefiles = process_shapefiles(config["shapefile_paths"], P_crs)
-        dataframes_by_crop = split_dfs_by_predicted(shapefiles)
-        deep_copied_dataframes = [copy.deepcopy(
-            df) for df in dataframes_by_crop]
+    config = read_config_json("config.json")
 
-        
-        os.makedirs(os.path.join(
-            config["save_path"], "Tilesets"), exist_ok=True)
-        os.makedirs(os.path.join(config["save_path"], "Json"), exist_ok=True)
-        print("Creating tilesets...")
+    boundaries_tuples, P_crs = to_tuple(config["boundary_details"])
+    shapefiles = process_shapefiles(config["shapefile_paths"], P_crs)
+    dataframes_by_crop = split_dfs_by_predicted(shapefiles)
+    # deep_copied_dataframes = [copy.deepcopy(
+    #     df) for df in dataframes_by_crop]
+    print(" dataframes seperated moving onto json")
+    
+    os.makedirs(os.path.join(
+        config["save_path"], "Tilesets"), exist_ok=True)
+    os.makedirs(os.path.join(config["save_path"], "Json"), exist_ok=True)
+    print("Creating tilesets...")
 
-        error_queue = Queue()
-        tileset_process = multiprocessing.Process(
-            target=run_create_tilesets, args=(deep_copied_dataframes, config, error_queue))
-        tileset_process.start()
+    # error_queue = Queue()
+    # tileset_process = multiprocessing.Process(
+    #     target=run_create_tilesets, args=(deep_copied_dataframes, config, error_queue))
+    # tileset_process.start()
+    print("type of boundary tuples",type( boundaries_tuples))
 
-        print("Creating survey JSON...")
-        intersected_dataframes = intersect_all(
-            dataframes_by_crop, boundaries_tuples, "output", config["unit"], config["esurvey_path"])
-        survey_json_creator(intersected_dataframes, config)
+    # print(boundaries_tuples)
 
-        tileset_process.join()
+    # print("Creating survey JSON...")
+    # intersected_dataframes = intersect_all(
+    #     dataframes_by_crop, boundaries_tuples, "output", config["unit"], config["esurvey_path"])
+    # survey_json_creator(intersected_dataframes, config)
 
-        if not error_queue.empty():
-            error_message = error_queue.get()
-            print(f"Error in subprocess: {error_message}")
+    # # tileset_process.join()
 
-        end = time.time()
-        print("Time taken:", (end - start) / 60)
-    except Exception as e:
-        print("An error occurred in the main process: ", e)
-        os.rmdir(os.path.join(config["save_path"], "Tilesets"))
-        os.rmdir(os.path.join(config["save_path"], "Json"))
+    # # if not error_queue.empty():
+    # #     error_message = error_queue.get()
+    # #     print(f"Error in subprocess: {error_message}")
+
+    end = time.time()
+    print("Time taken:", (end - start) / 60)
+
 
 
 if __name__ == "__main__":

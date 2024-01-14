@@ -1,6 +1,7 @@
 import geopandas as geopd
 import pandas as pd
 from processors.dataframe_processor import build_dataframe , reproject_df_crs, split_dfs_by_predicted, merge_df
+from shapely.validation import make_valid
 
 def process_shapefiles(shapefile_paths, priority_crs):
     """
@@ -9,14 +10,53 @@ def process_shapefiles(shapefile_paths, priority_crs):
     shapefile_paths: A list of paths to shapefiles.
     A geodataframe.
     """
+    
+    print("Preprocessing shapefiles.")
     merged_dataframe = merge_shapefiles(shapefile_paths, priority_crs)
-
+    print(" type after mergedf")
+    print(type(merged_dataframe))
     # crs reprojection TODO: Remove this when CRS is standardized
     #reproject_df_crs(merged_dataframe)
     
-    return merged_dataframe
+    merged_dataframe = drop_duplicates(merged_dataframe)
+    merged_dataframe.geometry = merged_dataframe.geometry.apply(lambda geom: fix_invalid_geometry(geom))
+    merged_dataframe = explode_df(merged_dataframe)
+    merged_dataframe = explode_df(merged_dataframe)
+    merged_dataframe = extract_polygons(merged_dataframe)
+    print(" type after hiba processoer")
+    print(type(merged_dataframe))
     
+    print("Preprocessing complete.")
+    return merged_dataframe
 
+def extract_polygons(df):
+    rows_to_drop = []
+    final_df = []
+
+    for index, row in df.iterrows():
+        if row['geometry'].geom_type != 'Polygon':
+            rows_to_drop.append(index)
+    df = df.drop(rows_to_drop, axis=0)
+    df = df.reset_index(drop=True)
+    final_df.append(df)
+    concat_df = pd.concat(final_df)
+    
+    return concat_df
+        
+
+def explode_df(df):
+    df = df.explode(column=None, ignore_index=True)
+    return df
+
+def fix_invalid_geometry(geometry):
+    if not geometry.is_valid:
+        return make_valid(geometry)
+    else:
+        return geometry
+
+def drop_duplicates(df):
+    df = df.drop_duplicates(ignore_index=True)
+    return df
 
 def merge_shapefiles(shapefile_paths, priority_crs):
     """

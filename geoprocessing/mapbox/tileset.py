@@ -32,11 +32,11 @@ def L1_tilesets(df_list, config):
     config: details from config.json file   
     """
     for crop_df in df_list:
-        add_index(crop_df)
-        calculate_area(crop_df, config["unit"])
+        crop_df = add_index(crop_df)
+        crop_df["area"] = calculate_area(crop_df, config["unit"])
         id = crop_df[PREDICTED_COLUMN].iloc[0]
         crop_name = crop_dictionary[id]
-        delete_predictions(crop_df)
+        crop_df = delete_predictions(crop_df)
         to_geojson(crop_df, config['save_path'], crop_name)  
         
             
@@ -49,11 +49,11 @@ def other_tilesets(df_list, config):
     config: details from config.json file   
     """
     one_df = merge_df(df_list)
-    assign_class(one_df)
-    assign_color_id(one_df)
-    delete_predictions(one_df)
-    add_index(one_df)
-    calculate_area(one_df, config["unit"])
+    one_df  = assign_class(one_df)
+    one_df = assign_color_id(one_df)
+    one_df = delete_predictions(one_df)
+    one_df = add_index(one_df)
+    one_df["area"] = calculate_area(one_df, config["unit"])
     to_geojson(one_df, config['save_path'], config['report_type'])
 
 

@@ -143,6 +143,10 @@ crop_dictionary = {
     
     #overlap 
     150: "Overlap Spring Maize Wheat",
-    151: "Overlap Wheat Rice"
+    151: "Overlap Wheat Rice",
+    152: "Overlap Potato Rice",
+    153: "Overlap Spring Maize Rice",
+    154: "Overlap Spring Maize Potato",
+    155: "Overlap Spring Maize Empty Land"
     
 }
