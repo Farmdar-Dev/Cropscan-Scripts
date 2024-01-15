@@ -15,7 +15,9 @@ def read_config_json(file_path):
     A dictionary containing configuration parameters.
     """
     with open(file_path, 'r') as file:
+        
         config = json.load(file)
+        
     return config
 
 

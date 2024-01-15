@@ -33,7 +33,8 @@ def L1_tilesets(df_list, config):
     """
     for crop_df in df_list:
         add_index(crop_df)
-        calculate_area(crop_df, config["unit"])
+        #calculate_area(crop_df, config["unit"])
+        crop_df["area"] = calculate_area(crop_df, config["unit"])
         id = crop_df[PREDICTED_COLUMN].iloc[0]
         crop_name = crop_dictionary[id]
         delete_predictions(crop_df)

@@ -31,6 +31,8 @@ crop_dictionary = {
     
     #more crops
     23: 'Watermelon',
+    31: 'Potato',
+    34 : 'Empty Land',
     
     #sowing
     32: 'June-July',
@@ -144,4 +146,9 @@ crop_dictionary = {
     #overlap 
     150: "Overlap Spring Maize Wheat",
     151: "Overlap Wheat Rice",
+    152: "Overlap Potato Rice",
+    153 : "Overlap Spring Maize Rice",
+    154 : "Overlap Spring Maize Potato",
+    155 : "Overlap Spring Maize Empty Land"
+    
 }

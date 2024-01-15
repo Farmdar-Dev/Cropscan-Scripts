@@ -36,21 +36,21 @@ def run():
         os.makedirs(os.path.join(config["save_path"], "Json"), exist_ok=True)
         print("Creating tilesets...")
 
-        error_queue = Queue()
-        tileset_process = multiprocessing.Process(
-            target=run_create_tilesets, args=(deep_copied_dataframes, config, error_queue))
-        tileset_process.start()
+        # error_queue = Queue()
+        # tileset_process = multiprocessing.Process(
+        #     target=run_create_tilesets, args=(deep_copied_dataframes, config, error_queue))
+        # tileset_process.start()
 
         print("Creating survey JSON...")
         intersected_dataframes = intersect_all(
             dataframes_by_crop, boundaries_tuples, "output", config["unit"], config["esurvey_path"])
         survey_json_creator(intersected_dataframes, config)
 
-        tileset_process.join()
+        #tileset_process.join()
 
-        if not error_queue.empty():
-            error_message = error_queue.get()
-            print(f"Error in subprocess: {error_message}")
+        # if not error_queue.empty():
+        #     error_message = error_queue.get()
+        #     print(f"Error in subprocess: {error_message}")
 
         end = time.time()
         print("Time taken:", (end - start) / 60)

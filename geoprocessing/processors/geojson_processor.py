@@ -23,3 +23,4 @@ def to_geojson(df, path, name):
 
     df = df.to_crs(TARGET_CRS)
     df.to_file(f"{os.path.join(path, name)}.geojson", driver='GeoJSON')
+    df.to_file(f"{os.path.join(path, name)}.shp", index = False )

@@ -65,7 +65,7 @@ def intersect_all(crop_dfs, boundary_tuples, output_folder, unit, esurvey_path):
             print( "crop df crs", crop_df.crs)
             print( "boundary df crs" , boundary_df.crs)
             intersection = gpd.overlay(
-                crop_df, boundary_df, how='intersection')
+                crop_df, boundary_df, how='intersection', keep_geom_type= True)
             intersection['crop'] = crop_name
             all_intersections.append(intersection)
 
