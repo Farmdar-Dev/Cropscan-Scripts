@@ -16,13 +16,9 @@ def run_create_tilesets(dataframes, config, error_queue):
     except Exception as e:
         error_queue.put(str(e))
 
-
 def run():
     print("Reading data...")
-    
-        
     config = read_config_json("config.json")
-
     boundaries_tuples, P_crs = to_tuple(config["boundary_details"])
     shapefiles = process_shapefiles(config["shapefile_paths"], P_crs)
     dataframes_by_crop = split_dfs_by_predicted(shapefiles)
@@ -43,10 +39,10 @@ def run():
 
     # print(boundaries_tuples)
 
-    # print("Creating survey JSON...")
-    # intersected_dataframes = intersect_all(
-    #     dataframes_by_crop, boundaries_tuples, "output", config["unit"], config["esurvey_path"])
-    # survey_json_creator(intersected_dataframes, config)
+    print("Creating survey JSON...")
+    intersected_dataframes = intersect_all(
+        dataframes_by_crop, boundaries_tuples, "output", config["unit"], config["esurvey_path"])
+    survey_json_creator(intersected_dataframes, config)
 
     # # tileset_process.join()
 
