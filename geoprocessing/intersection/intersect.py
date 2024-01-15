@@ -42,18 +42,17 @@ def intersect_all(crop_dfs, boundary_tuples, output_folder, unit, esurvey_path):
     for title, boundary_df in boundary_tuples:
         for crop_df, crop_name in zip(crop_dfs, crop_names):
             #crop_df["acreage"] = calculate_area(crop_df, unit)
-            print("interescting" ,crop_df, "with", boundary_df)
             intersection = gpd.overlay(boundary_df, crop_df, keep_geom_type=True, make_valid=True)
             intersection['crop'] = crop_name
             intersection["acreage"] = calculate_area(intersection, unit)
-            _intersection = drop_empty_areas(intersection)
-            all_intersections.append(_intersection)
+            #_intersection = drop_empty_areas(intersection)
+            all_intersections.append(intersection)
     
     aggregated_data = aggregate_intersections(all_intersections, unit)
     pivoted_data = pivot_data(aggregated_data)
 
-    save_combined_as_geojson(
-        pivoted_data, boundary_tuples, output_folder, esurvey_path, unit)
+    # save_combined_as_geojson(
+    #     pivoted_data, boundary_tuples, output_folder, esurvey_path, unit)
 
     return make_boundary_aggregated_dfs(pivoted_data, boundary_tuples, esurvey_path, unit)
 
@@ -76,7 +75,7 @@ def aggregate_intersections(intersections, unit):
     #[drop_empty_areas(interesction) for interesction in intersections]
     aggregated_data = pd.concat(intersections)
    # aggregated_data['acreage'] = calculate_area(aggregated_data, unit)
-    return aggregated_data.groupby(['layer_id', 'id', 'crop'])['acreage'].sum().reset_index()
+    return aggregated_data.groupby(['layer_id', 'id', 'crop'])['acreage'].sum().round(2).reset_index()
 
 
 def pivot_data(df):

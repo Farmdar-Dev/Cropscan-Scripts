@@ -42,6 +42,7 @@ def survey_json_creator(intersected_dataframes, config):
 
     total_area = ""
     total_esurvey = ""
+    total_crop_area = ""
     for df in intersected_dataframes:
         survey_title = df['survey_title'].iloc[0]
         df = df.drop(columns=['survey_title'])
@@ -60,10 +61,11 @@ def survey_json_creator(intersected_dataframes, config):
             col_to_keep = [col for col in df.columns if col not in [
                 'Boundary Name', 'id', 'Esurvey Area', 'geometry', 'area']]
             crop_df = df[col_to_keep]
-            total_area_, total_esurvey_, total_crop_area = get_total_aoi_stats(
+            total_area_, total_esurvey_, total_crop_area_ = get_total_aoi_stats(
                 df, crop_df)
             total_area = total_area_
             total_esurvey = total_esurvey_
+            total_crop_area = total_crop_area_
 
         for index, row in df.iterrows():
             # Extract specific columns
@@ -120,7 +122,7 @@ def survey_json_creator(intersected_dataframes, config):
     }
     # save the json file
     save_path = config["save_path"] + "/Json/"
-    file_name = "survey.json"
+    file_name = "survey_with_corrected_wheat.json"
 
     # Check if the directory exists
     if not os.path.exists(save_path):

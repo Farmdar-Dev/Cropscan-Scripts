@@ -18,12 +18,11 @@ def process_shapefiles(shapefile_paths, priority_crs):
     # crs reprojection TODO: Remove this when CRS is standardized
     #reproject_df_crs(merged_dataframe)
     
-    merged_dataframe = drop_duplicates(merged_dataframe)
+   # merged_dataframe = drop_duplicates(merged_dataframe)
     merged_dataframe.geometry = merged_dataframe.geometry.apply(lambda geom: fix_invalid_geometry(geom))
     merged_dataframe = explode_df(merged_dataframe)
     merged_dataframe = explode_df(merged_dataframe)
     merged_dataframe = extract_polygons(merged_dataframe)
-    print(" type after hiba processoer")
     print(type(merged_dataframe))
     
     print("Preprocessing complete.")
@@ -36,6 +35,8 @@ def extract_polygons(df):
     for index, row in df.iterrows():
         if row['geometry'].geom_type != 'Polygon':
             rows_to_drop.append(index)
+        elif row['geometry'].geom_type == 'MultiPolygon':
+            print("multi polygon found")
     df = df.drop(rows_to_drop, axis=0)
     df = df.reset_index(drop=True)
     final_df.append(df)
