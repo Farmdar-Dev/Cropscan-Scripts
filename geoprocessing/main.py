@@ -19,36 +19,36 @@ def run_create_tilesets(dataframes, config, error_queue):
 def run():
     print("Reading data...")
     config = read_config_json("config.json")
-    boundaries_tuples, P_crs = to_tuple(config["boundary_details"])
-    shapefiles = process_shapefiles(config["shapefile_paths"], P_crs)
+    boundaries_tuples = to_tuple(config["boundary_details"])
+    shapefiles = process_shapefiles(config["shapefile_paths"])
     dataframes_by_crop = split_dfs_by_predicted(shapefiles)
-    # deep_copied_dataframes = [copy.deepcopy(
-    #     df) for df in dataframes_by_crop]
-    print(" dataframes seperated moving onto json")
+    deep_copied_dataframes = [copy.deepcopy(
+        df) for df in dataframes_by_crop]
+    print("Dataframes seperated moving onto json")
     
     os.makedirs(os.path.join(
         config["save_path"], "Tilesets"), exist_ok=True)
     os.makedirs(os.path.join(config["save_path"], "Json"), exist_ok=True)
     print("Creating tilesets...")
 
-    # error_queue = Queue()
-    # tileset_process = multiprocessing.Process(
-    #     target=run_create_tilesets, args=(deep_copied_dataframes, config, error_queue))
-    # tileset_process.start()
+    error_queue = Queue()
+    tileset_process = multiprocessing.Process(
+        target=run_create_tilesets, args=(deep_copied_dataframes, config, error_queue))
+    tileset_process.start()
     print("type of boundary tuples",type( boundaries_tuples))
 
-    # print(boundaries_tuples)
+    print(boundaries_tuples)
 
     print("Creating survey JSON...")
     intersected_dataframes = intersect_all(
-        dataframes_by_crop, boundaries_tuples, "output", config["unit"], config["esurvey_path"])
+        dataframes_by_crop, boundaries_tuples, config["save_path"], config["unit"], config["esurvey_path"])
     survey_json_creator(intersected_dataframes, config)
 
-    # # tileset_process.join()
+    tileset_process.join()
 
-    # # if not error_queue.empty():
-    # #     error_message = error_queue.get()
-    # #     print(f"Error in subprocess: {error_message}")
+    if not error_queue.empty():
+        error_message = error_queue.get()
+        print(f"Error in subprocess: {error_message}")
 
     end = time.time()
     print("Time taken:", (end - start) / 60)
