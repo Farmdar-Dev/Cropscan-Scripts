@@ -4,6 +4,7 @@ from constants.generic import PREDICTED_COLUMN
 from utils.area_calculation import calculate_area
 from constants.crop_dict import crop_dictionary
 from constants.color_dict import color_id
+from constants.generic import DEFAULT_CRS
 
 
 
@@ -12,41 +13,20 @@ def to_tuple(boundary_dict):
     # Create tuples of (title, dataframe)
     boundary_tuples = [(title, gpd.read_file(path))
     for title, path in boundary_dict.items()]
-    print("tuples")
-    for title, boundary_df in boundary_tuples:
-        print("titles", title)
 
-    # TODO: move to constants if all this works
-    priority_crs = 'WGS 84 / UTM zone 42N'
 
     print("Reprojecting boundaries.")
     # Reproject CRS if necessary and other preprocessing
     for title, boundary_df in boundary_tuples:
         boundary_df['original_geometry'] = boundary_df.geometry
         boundary_df['layer_id'] = id(boundary_df)
-        #boundary_df.to_crs(priority_crs, inplace = True)
+        boundary_df.to_crs(DEFAULT_CRS, inplace = True)
         
-    for title, boundary_df in boundary_tuples:
-        # boundary_df = boundary_df.to_crs(boundary_df.estimate_utm_crs())
-        boundary_df.to_crs(boundary_df.estimate_utm_crs(), inplace = True)
-        
-        if boundary_df.crs.name != priority_crs:
-            priority_crs = boundary_df.crs
-            break
-
-    if priority_crs != 'WGS 84 / UTM zone 42N':
-        for title, boundary_df in boundary_tuples:
-            # boundary_df = boundary_df.to_crs(priority_crs)
-            boundary_df.to_crs(boundary_df.estimate_utm_crs(), inplace = True)
-    
     print("Preprocessing boundaries.")
     boundary_tuples = drop_duplicates_tuple(boundary_tuples)
     
     print("Preprocessing complete.")
-    return boundary_tuples, priority_crs 
-    #the priority crs should ideally pass onto the reprojection function 
-    #and be stored there rather than be sent to main
-
+    return boundary_tuples 
 
 def drop_duplicates_tuple(df_tuple):
 
