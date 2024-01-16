@@ -21,7 +21,8 @@ def add_esurvey_area(boundary_df, esurvey_path, unit):
     boundary_df_cpy = boundary_df.copy()
     intersection = gpd.overlay(boundary_df_cpy, esurvey_df, how='intersection')
     intersection[ESURVEY_COLUMN] = calculate_area(intersection, unit)
-    intersection = intersection.groupby(['id_1'])[ESURVEY_COLUMN].sum().reset_index()
+    intersection = intersection.groupby(
+        ['id_1'])[ESURVEY_COLUMN].sum().reset_index()
     intersection = intersection.rename({'id_1': 'id'}, axis='columns')
 
     boundary_df = boundary_df.merge(
@@ -36,25 +37,28 @@ def intersect_all(crop_dfs, boundary_tuples, output_folder, unit, esurvey_path):
     """
 
     # Deriving crop names from the crop dataframes
-    crop_names = [crop_dictionary.get(int(df[PREDICTED_COLUMN].iloc[0]), 'Unknown Crop') for df in crop_dfs]
+    crop_names = [crop_dictionary.get(
+        int(df[PREDICTED_COLUMN].iloc[0]), 'Unknown Crop') for df in crop_dfs]
 
     all_intersections = []
     for title, boundary_df in boundary_tuples:
         for crop_df, crop_name in zip(crop_dfs, crop_names):
-            #crop_df["acreage"] = calculate_area(crop_df, unit)
-            intersection = gpd.overlay(boundary_df, crop_df, keep_geom_type=True, make_valid=True)
+            # Using shapely for making valid geometries so geopandas' make valid is false
+            intersection = gpd.overlay(
+                boundary_df, crop_df, keep_geom_type=True, make_valid=False)
             intersection['crop'] = crop_name
             intersection["acreage"] = calculate_area(intersection, unit)
-            #_intersection = drop_empty_areas(intersection)
+            # _intersection = drop_empty_areas(intersection)
             all_intersections.append(intersection)
-    
+
     aggregated_data = aggregate_intersections(all_intersections, unit)
     pivoted_data = pivot_data(aggregated_data)
 
-    # save_combined_as_geojson(
-    #     pivoted_data, boundary_tuples, output_folder, esurvey_path, unit)
+    save_combined_as_geojson(
+        pivoted_data, boundary_tuples, output_folder, esurvey_path, unit)
 
     return make_boundary_aggregated_dfs(pivoted_data, boundary_tuples, esurvey_path, unit)
+
 
 def drop_empty_areas(df):
     rows_to_drop = []
@@ -64,19 +68,20 @@ def drop_empty_areas(df):
             rows_to_drop.append(index)
     df = df.drop(rows_to_drop, axis=0)
     df = df.reset_index(drop=True)
-    
+
     return df
+
 
 def aggregate_intersections(intersections, unit):
     """
     Aggregates intersection data to sum the total acreage of each crop in each polygon.
     Uses the unique boundary identifier for accurate aggregation.
     """
-    #[drop_empty_areas(interesction) for interesction in intersections]
+    # [drop_empty_areas(interesction) for interesction in intersections]
     aggregated_data = pd.concat(intersections)
    # aggregated_data['acreage'] = calculate_area(aggregated_data, unit)
     return aggregated_data.groupby(['layer_id', 'id', 'crop'])['acreage'].sum().round(2).reset_index()
-
+2
 
 def pivot_data(df):
     """
@@ -85,6 +90,8 @@ def pivot_data(df):
     pivot_df = df.pivot(index=['layer_id', 'id'],
                         columns='crop', values='acreage').reset_index()
     return pivot_df.fillna(0)  # Fill NaNs with 0
+
+# TODO : to be moved to appropriate file
 
 
 def save_combined_as_geojson(df, boundary_tuples, output_folder, esurvey_df, unit):
@@ -99,8 +106,10 @@ def save_combined_as_geojson(df, boundary_tuples, output_folder, esurvey_df, uni
         esurvey_df: DataFrame of the e-survey data.
         unit: Unit for area calculation.
     """
-    if not os.path.exists(output_folder):
-        os.makedirs(output_folder)
+    print("Saving combined data as GeoJSON...")
+    save_path = output_folder + "/GeoJson/"
+    if not os.path.exists(save_path):
+        os.makedirs(save_path)
 
     for title, boundary_df in boundary_tuples:
         boundary_df = add_esurvey_area(boundary_df, esurvey_df, unit)
@@ -109,7 +118,8 @@ def save_combined_as_geojson(df, boundary_tuples, output_folder, esurvey_df, uni
         combined_df.geometry = combined_df['original_geometry']
         combined_df.drop(
             columns=['original_geometry', "layer_id"], inplace=True)
-        combined_df.to_file(output_path, driver='GeoJSON')
+        _save_path = os.path.join(save_path, f'{title}.geojson')
+        combined_df.to_file(_save_path, driver='GeoJSON')
 
 
 def make_boundary_aggregated_dfs(pivoted_data, boundary_tuples, esurvey_df, unit):
