@@ -18,6 +18,15 @@ def read_config_json(file_path):
         config = json.load(file)
     return config
 
+def validate_config(config):
+    """
+    Validate the configuration parameters.
+    Args:
+    config: A dictionary containing configuration parameters.
+    Returns:
+    A boolean value.
+    """
+    pass
 
 def survey_json_creator(intersected_dataframes, config):
     """
@@ -54,7 +63,6 @@ def survey_json_creator(intersected_dataframes, config):
         report_properties = {}
 
         # TODO : refactor this function which has turned into a spaghetti
-        # stop using random words, i thought spaghetti was a complex data structure for 10 secs, or is it omg?
         if survey_title == "aoi":
             # we need to extract total crop area from the df
             # generate new df with only crop area columns
@@ -122,7 +130,7 @@ def survey_json_creator(intersected_dataframes, config):
     }
     # save the json file
     save_path = config["save_path"] + "/Json/"
-    file_name = "survey_with_corrected_wheat.json"
+    file_name = "survey.json"
 
     # Check if the directory exists
     if not os.path.exists(save_path):
@@ -142,7 +150,7 @@ def get_total_aoi_stats(aoi_df, crop_df):
     total_area = aoi_df_cpy['area'].sum().round(2)
     # drop the area column
     aoi_df_cpy.drop(columns=['area'], inplace=True)
-
+    # TODO: Fix this - this doesnt work when we have multiple crops in cropsan
     total_crop_area = crop_df.sum().sum()
     total_crop_area = round(total_crop_area, 2)
 
