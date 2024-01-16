@@ -2,8 +2,8 @@ import geopandas as geopd
 import pandas as pd
 from processors.dataframe_processor import build_dataframe , reproject_df_crs, split_dfs_by_predicted, merge_df
 from shapely.validation import make_valid
-
-def process_shapefiles(shapefile_paths, priority_crs):
+from constants.generic import DEFAULT_CRS
+def process_shapefiles(shapefile_paths):
     """
     Read shapefiles and returns a single GeoDataFrame with crs.
     Args:
@@ -11,21 +11,13 @@ def process_shapefiles(shapefile_paths, priority_crs):
     A geodataframe.
     """
     
-    print("Preprocessing shapefiles.")
-    merged_dataframe = merge_shapefiles(shapefile_paths, priority_crs)
-    print(" type after mergedf")
-    print(type(merged_dataframe))
-    # crs reprojection TODO: Remove this when CRS is standardized
-    #reproject_df_crs(merged_dataframe)
-    
-   # merged_dataframe = drop_duplicates(merged_dataframe)
+    print("processing shapefiles")
+    merged_dataframe = merge_shapefiles(shapefile_paths, DEFAULT_CRS)
     merged_dataframe.geometry = merged_dataframe.geometry.apply(lambda geom: fix_invalid_geometry(geom))
     merged_dataframe = explode_df(merged_dataframe)
     merged_dataframe = explode_df(merged_dataframe)
     merged_dataframe = extract_polygons(merged_dataframe)
-    print(type(merged_dataframe))
-    
-    print("Preprocessing complete.")
+    print("shapefiles processed")
     return merged_dataframe
 
 def extract_polygons(df):
@@ -50,6 +42,9 @@ def explode_df(df):
     return df
 
 def fix_invalid_geometry(geometry):
+    if geometry is None:
+        print("some row in shapefile has no geometry")
+        return 
     if not geometry.is_valid:
         return make_valid(geometry)
     else:
