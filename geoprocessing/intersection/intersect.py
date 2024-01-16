@@ -45,7 +45,7 @@ def intersect_all(crop_dfs, boundary_tuples, output_folder, unit, esurvey_path):
         for crop_df, crop_name in zip(crop_dfs, crop_names):
             # Using shapely for making valid geometries so geopandas' make valid is false
             intersection = gpd.overlay(
-                boundary_df, crop_df, keep_geom_type=True, make_valid=False)
+                boundary_df, crop_df, keep_geom_type=True, make_valid=True)
             intersection['crop'] = crop_name
             intersection["acreage"] = calculate_area(intersection, unit)
             # _intersection = drop_empty_areas(intersection)
