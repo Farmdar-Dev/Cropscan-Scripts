@@ -18,6 +18,15 @@ def read_config_json(file_path):
         config = json.load(file)
     return config
 
+def validate_config(config):
+    """
+    Validate the configuration parameters.
+    Args:
+    config: A dictionary containing configuration parameters.
+    Returns:
+    A boolean value.
+    """
+    pass
 
 def survey_json_creator(intersected_dataframes, config):
     """
@@ -42,6 +51,7 @@ def survey_json_creator(intersected_dataframes, config):
 
     total_area = ""
     total_esurvey = ""
+    total_crop_area = ""
     for df in intersected_dataframes:
         survey_title = df['survey_title'].iloc[0]
         df = df.drop(columns=['survey_title'])
@@ -53,17 +63,17 @@ def survey_json_creator(intersected_dataframes, config):
         report_properties = {}
 
         # TODO : refactor this function which has turned into a spaghetti
-        # stop using random words, i thought spaghetti was a complex data structure for 10 secs, or is it omg?
         if survey_title == "aoi":
             # we need to extract total crop area from the df
             # generate new df with only crop area columns
             col_to_keep = [col for col in df.columns if col not in [
                 'Boundary Name', 'id', 'Esurvey Area', 'geometry', 'area']]
             crop_df = df[col_to_keep]
-            total_area_, total_esurvey_, total_crop_area = get_total_aoi_stats(
+            total_area_, total_esurvey_, total_crop_area_ = get_total_aoi_stats(
                 df, crop_df)
             total_area = total_area_
             total_esurvey = total_esurvey_
+            total_crop_area = total_crop_area_
 
         for index, row in df.iterrows():
             # Extract specific columns
@@ -140,7 +150,7 @@ def get_total_aoi_stats(aoi_df, crop_df):
     total_area = aoi_df_cpy['area'].sum().round(2)
     # drop the area column
     aoi_df_cpy.drop(columns=['area'], inplace=True)
-
+    # TODO: Fix this - this doesnt work when we have multiple crops in cropsan
     total_crop_area = crop_df.sum().sum()
     total_crop_area = round(total_crop_area, 2)
 

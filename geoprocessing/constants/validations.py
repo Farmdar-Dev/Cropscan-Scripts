@@ -20,6 +20,7 @@ crop_names = [
 
 boundary_titles = [
     "aoi",
+    "province",
     "district",
     "tehsil",
     "uc",

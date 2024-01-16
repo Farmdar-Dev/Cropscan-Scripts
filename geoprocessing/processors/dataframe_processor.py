@@ -4,6 +4,39 @@ from constants.generic import PREDICTED_COLUMN
 from utils.area_calculation import calculate_area
 from constants.crop_dict import crop_dictionary
 from constants.color_dict import color_id
+from constants.generic import DEFAULT_CRS
+
+
+
+
+def to_tuple(boundary_dict):
+    # Create tuples of (title, dataframe)
+    boundary_tuples = [(title, gpd.read_file(path))
+    for title, path in boundary_dict.items()]
+
+
+    print("Reprojecting boundaries.")
+    # Reproject CRS if necessary and other preprocessing
+    for title, boundary_df in boundary_tuples:
+        boundary_df['original_geometry'] = boundary_df.geometry
+        boundary_df['layer_id'] = id(boundary_df)
+        boundary_df.to_crs(DEFAULT_CRS, inplace = True)
+        
+    print("Preprocessing boundaries.")
+    boundary_tuples = drop_duplicates_tuple(boundary_tuples)
+    
+    print("Preprocessing complete.")
+    return boundary_tuples 
+
+def drop_duplicates_tuple(df_tuple):
+
+    df_tuple_simplified = []
+
+    for title, df in df_tuple:
+        df = df.drop_duplicates(ignore_index=True)
+        # df_tuple_simplified.append([(title, df)])
+        df_tuple_simplified.append((title, df))
+    return df_tuple_simplified  
 
 def build_dataframe(filepaths: list):
     """
@@ -49,7 +82,6 @@ def split_dfs_by_predicted(merged_dataframe):
 
     # changing datatype of column 'predicted' to integer
     merged_dataframe[PREDICTED_COLUMN] = merged_dataframe[PREDICTED_COLUMN].astype(int)
-    
     #gathering unique crop ids
     unique_crops = merged_dataframe[PREDICTED_COLUMN].unique()
 
@@ -74,6 +106,7 @@ def assign_class(df):
     """
     df[PREDICTED_COLUMN] = df[PREDICTED_COLUMN].astype(int)
     df['Class'] = df[PREDICTED_COLUMN].apply(lambda x : crop_dictionary[x])
+    return df
     
 def assign_color_id(df):
     """
@@ -85,6 +118,7 @@ def assign_color_id(df):
     """
     df[PREDICTED_COLUMN] = df[PREDICTED_COLUMN].astype(int)
     df['c_id'] = df[PREDICTED_COLUMN].apply(lambda x : color_id[x])
+    return df
     
 def delete_predictions(df):
     """
@@ -95,6 +129,7 @@ def delete_predictions(df):
     manipulated dataframe
     """
     del df[PREDICTED_COLUMN]
+    return df
     
 def add_index(df):
     """
@@ -105,6 +140,7 @@ def add_index(df):
     manipulated dataframe
     """
     df.insert(0, 'id', range(1, 1 + len(df)))
+    return df
     
 def merge_df(list_of_df):
     """
