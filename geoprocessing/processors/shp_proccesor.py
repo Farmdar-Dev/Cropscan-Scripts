@@ -43,7 +43,7 @@ def explode_df(df):
 
 def fix_invalid_geometry(geometry):
     if geometry is None:
-        print("some row in shapefile has no geometry")
+        print("some row in shapefile has no")
         return 
     if not geometry.is_valid:
         return make_valid(geometry)
