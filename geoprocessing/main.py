@@ -16,6 +16,12 @@ def run_create_tilesets(dataframes, config, error_queue):
     except Exception as e:
         error_queue.put(str(e))
 
+def update_save_path(config):
+    user_name = config["user_name"]
+    date = config["date"]
+    combined_folder_name = user_name + "_" + date
+    config["save_path"] = os.path.join(config["save_path"], combined_folder_name)
+
 def run():
     print("Reading data...")
     config = read_config_json("config.json")
@@ -26,11 +32,7 @@ def run():
         df) for df in dataframes_by_crop]
     print("Dataframes seperated moving onto json")
     
-    user_name = config["user_name"]
-    date = config["date"]
-    combined_folder_name = user_name + "_" + date
-    config["save_path"] = os.path.join(config["save_path"], combined_folder_name)
-    
+    update_save_path(config)
     os.makedirs(os.path.join(
         config["save_path"], "Tilesets"), exist_ok=True)
     os.makedirs(os.path.join(config["save_path"], "Json"), exist_ok=True)
