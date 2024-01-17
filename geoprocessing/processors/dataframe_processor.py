@@ -117,7 +117,7 @@ def assign_color_id(df):
     manipulated column
     """
     df[PREDICTED_COLUMN] = df[PREDICTED_COLUMN].astype(int)
-    df['c_id'] = df[PREDICTED_COLUMN].apply(lambda x : color_id[int(x)])
+    df['c_id'] = df[PREDICTED_COLUMN].apply(lambda x : color_id[x])
     return df
     
 def delete_predictions(df):
