@@ -18,6 +18,7 @@ crop_dictionary = {
     14: 'Wheat',
     15: 'Tomato',
     16: 'Mountain',
+    34: 'Empty Arable Land',
     
     #maize variety
     17: 'Grain', 
