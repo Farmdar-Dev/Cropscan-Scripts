@@ -70,7 +70,7 @@ def survey_json_creator(intersected_dataframes, config):
                 'Boundary Name', 'id', 'Esurvey Area', 'geometry', 'area']]
             crop_df = df[col_to_keep]
             total_area_, total_esurvey_, total_crop_area_ = get_total_aoi_stats(
-                df, crop_df)
+                df, crop_df, config["crop"])
             total_area = total_area_
             total_esurvey = total_esurvey_
             total_crop_area = total_crop_area_
@@ -142,7 +142,7 @@ def survey_json_creator(intersected_dataframes, config):
         json.dump(survey_json, outfile)
 
 
-def get_total_aoi_stats(aoi_df, crop_df):
+def get_total_aoi_stats(aoi_df, crop_df, crop_name):
     #make a copy of aoi_df 
     aoi_df_cpy = aoi_df.copy()
     reproject_df_crs(aoi_df_cpy)
@@ -150,14 +150,17 @@ def get_total_aoi_stats(aoi_df, crop_df):
     total_area = aoi_df_cpy['area'].sum().round(2)
     # drop the area column
     aoi_df_cpy.drop(columns=['area'], inplace=True)
-    # TODO: Fix this - this doesnt work when we have multiple crops in cropsan
-    total_crop_area = crop_df.sum().sum()
-    total_crop_area = round(total_crop_area, 2)
 
     total_esurvey_area = 0
     if not aoi_df_cpy['Esurvey Area'].eq('-').any():
         total_esurvey_area = aoi_df_cpy['Esurvey Area'].sum().round(2)
+        
+    total_crop_area = 0
+    if crop_name in crop_df.columns:
+        total_crop_area = round(crop_df[crop_name].sum(), 2)
+        return total_area, total_esurvey_area, total_crop_area
 
+    total_crop_area = round(crop_df.sum().sum(), 2)
     return total_area, total_esurvey_area, total_crop_area
 
 
