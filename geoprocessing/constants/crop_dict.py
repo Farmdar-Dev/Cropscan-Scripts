@@ -70,6 +70,38 @@ crop_dictionary = {
     101: 'Grain',
     102: 'Silage',
     
+    #nitrogen report
+    103: "Low_",
+    104: "Medium_",
+    105: "High_",
+    
+    #some more crops
+    111: 'Artichoke',
+    112: 'Grapes',
+    113: 'OliveTree',
+    114: 'Jojoba',
+    115: 'Asparagus',
+    
+    #water stress
+    124: 'Stress_',
+    125: 'Mild Stress',
+    126: 'No Stress_',
+    127: 'High Moisture',
+ 
+    #overlap 
+    150: "Overlap Spring Maize Wheat",
+    151: "Overlap Wheat Rice",
+    152: "Overlap Potato Rice",
+    153: "Overlap Spring Maize Rice",
+    154: "Overlap Spring Maize Potato",
+    155: "Overlap Spring Maize Empty Land",
+    
+    #more sowing
+    170: 'Early June',
+    171: 'Late June',
+    172: 'Early July',
+    173: 'Late July',
+    
     #variety
     1000: 'Other Variety',
     1001: 'CoL-29',
@@ -122,32 +154,6 @@ crop_dictionary = {
     1048: 'US-54',
     1049: 'CPF-239',
     1050: 'CSSG-676',
-    1051: 'HS-2',
-    
-    #some more crops
-    111: 'Artichoke',
-    112: 'Grapes',
-    113: 'OliveTree',
-    114: 'Jojoba',
-    115: 'Asparagus',
-    
-    #water stress
-    124: 'Stress_',
-    125: 'Mild Stress',
-    126: 'No Stress_',
-    127: 'High Moisture',
-    
-    #nitrogen report
-    103: "Low_",
-    104: "Medium_",
-    105: "High_",
-    
-    #overlap 
-    150: "Overlap Spring Maize Wheat",
-    151: "Overlap Wheat Rice",
-    152: "Overlap Potato Rice",
-    153: "Overlap Spring Maize Rice",
-    154: "Overlap Spring Maize Potato",
-    155: "Overlap Spring Maize Empty Land"
+    1051: 'HS-2'
     
 }
