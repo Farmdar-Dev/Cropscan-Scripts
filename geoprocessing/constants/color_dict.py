@@ -7,6 +7,13 @@ color_id ={
  22: 64, #apr
  32: 93, #jun-jul
  33: 68, #aug
+ 35: 35, #may
+ 36: 36, #june
+ 37: 37, #july
+ 38: 38, #sep
+ 39: 39, #oct
+ 40: 40, #nov
+ 41: 41, #dec
  
  #plant health
  73: 73,
