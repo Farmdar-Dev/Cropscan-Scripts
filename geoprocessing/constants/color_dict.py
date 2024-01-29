@@ -49,6 +49,12 @@ color_id ={
  126: 126,	
  127: 127,
  
+ #more sowing
+ 170: 170, #early june
+ 171: 171, #late june
+ 172: 172, #early july 
+ 173: 173, #late july
+ 
  #variety	
  1000: 17,
  1001: 18,
