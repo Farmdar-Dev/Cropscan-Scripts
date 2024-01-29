@@ -36,6 +36,13 @@ crop_dictionary = {
     #sowing
     32: 'June-July',
     33: 'August',
+    35: 'May',
+    36: 'June',
+    37: 'July',
+    38: 'September',
+    39: 'October',
+    40: 'November',
+    41: 'December',
     
     #plant health
     73: 'Low Vegetation',
