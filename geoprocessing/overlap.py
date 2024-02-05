@@ -16,10 +16,21 @@ import time
 
 
 def intersect(overlap, boundaries_tuple, config):
-    
+    """
+    Intersects the overlap dataframe with each boundary to generate stats.
+    Args:
+    overlap: the overlap dataframe.
+    boundaries_tuple: tuple containing boundary dataframes
+    config: config json data
+    Output:
+    Generates a stats.csv
+    """
     stats = []
     
     print("Generating stats...")
+    
+    #overlaying overlap tile with each boundary df to generate overlapping area per boundary stats
+    
     for title, boundary_df in boundaries_tuple:
         containment = gpd.overlay(boundary_df, overlap, keep_geom_type=True, make_valid=True)
         containment['area'] = calculate_area(containment, config['unit'])
@@ -33,6 +44,10 @@ def intersect(overlap, boundaries_tuple, config):
 
 def run():
     
+    """
+    Finds overlapping area between two tiles and generates a third.
+    """
+    
     print("Reading data...")
     config = read_config_json("overlap/config.json")
     
@@ -41,14 +56,17 @@ def run():
     
     print("Preprocessing data...")
     
+    #adding title column to boundary dataframes
     for title, boundary_df in boundaries_tuples:
         boundary_df['title'] = title
     
+    #fixing invalid geom for correct area calculation
     for title, shapefile_df in shapefiles_tuples:
         shapefile_df.geometry = shapefile_df.geometry.apply(lambda geom: fix_invalid_geometry(geom))
         
     shapefiles = []
-        
+    
+    #reducing shapes to polygons to maintain uniform geometry in dataframes ie. polygon    
     for title, shapefile_df in shapefiles_tuples:
         shapefile_df = explode_df(shapefile_df)
         shapefile_df = explode_df(shapefile_df)
@@ -59,6 +77,7 @@ def run():
     print("Finding overlapping area...")
     overlap = gpd.overlay(shapefiles[0], shapefiles[1], keep_geom_type=True, make_valid=True)
     
+    #repeating preprocessing with new tile created
     print("Preparing tile...")
     overlap.geometry = overlap.geometry.apply(lambda geom: fix_invalid_geometry(geom))
     overlap = explode_df(overlap)   
@@ -73,7 +92,8 @@ def run():
     print("Saving tile...")
     to_geojson(overlap, config['output_path'], 'overlap')
     
-    intersect(overlap, boundaries_tuples, config)
+    #the stats.csv generation is no longer required
+    #intersect(overlap, boundaries_tuples, config)
     
 
 if __name__ == "__main__":
