@@ -26,9 +26,8 @@ def extract_polygons(df):
 
     for index, row in df.iterrows():
         if row['geometry'].geom_type != 'Polygon':
+            print(row['geometry'].geom_type)
             rows_to_drop.append(index)
-        elif row['geometry'].geom_type == 'MultiPolygon':
-            print("multi polygon found")
     df = df.drop(rows_to_drop, axis=0)
     df = df.reset_index(drop=True)
     final_df.append(df)
