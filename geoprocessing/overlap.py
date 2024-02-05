@@ -8,11 +8,34 @@ from processors.dataframe_processor import to_tuple
 from processors.shp_proccesor import fix_invalid_geometry, explode_df, extract_polygons
 import geopandas as gpd
 from utils.area_calculation import calculate_area
-from processors.geojson_processor import to_geojson
 import pandas as pd
 import time
+from overlap.overlap_dict import overlap_dictionary
+from constants.generic import TARGET_CRS
+import os
 
 
+
+def to_shp(df, path, name):
+    """
+    Saves report(s) as shp
+    Args:
+    df: A dataframe
+    path: path to save shp to
+    crop_type: name of file   
+    """
+    path = os.path.join(path, "Tilesets")
+
+    
+    if not os.path.isdir(path):
+        try:
+            os.mkdir(path)
+        except Exception as e:
+            print(f"An error occurred while trying to create the output folder: {e}")
+            return
+
+    df = df.to_crs(TARGET_CRS)
+    df.to_file(f"{os.path.join(path, name)}.shp")
 
 
 def intersect(overlap, boundaries_tuple, config):
@@ -76,6 +99,8 @@ def run():
     
     print("Finding overlapping area...")
     overlap = gpd.overlay(shapefiles[0], shapefiles[1], keep_geom_type=True, make_valid=True)
+    #removing all columns except geometry column
+    overlap = overlap[['geometry']]
     
     #repeating preprocessing with new tile created
     print("Preparing tile...")
@@ -83,14 +108,17 @@ def run():
     overlap = explode_df(overlap)   
     overlap = explode_df(overlap)
     overlap = extract_polygons(overlap) 
-    overlap = overlap.rename(columns ={'predicted_1':shapefiles_tuples[0][0], 'predicted_2':shapefiles_tuples[1][0]})
+    #overlap = overlap.rename(columns ={'predicted_1':shapefiles_tuples[0][0], 'predicted_2':shapefiles_tuples[1][0]})
     
-    print("Calculating area..")
-    overlap['area'] = calculate_area(overlap, config['unit'])
+    #assigning predicted column
+    overlap['predicted'] = overlap_dictionary[config['overlap']]
+    
+    #area calculation is no longer required
+    #overlap['area'] = calculate_area(overlap, config['unit'])
     overlap = extract_polygons(overlap)
     
     print("Saving tile...")
-    to_geojson(overlap, config['output_path'], 'overlap')
+    to_shp(overlap, config['output_path'], config['overlap'])
     
     #the stats.csv generation is no longer required
     #intersect(overlap, boundaries_tuples, config)
