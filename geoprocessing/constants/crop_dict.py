@@ -18,7 +18,8 @@ crop_dictionary = {
     14: 'Wheat',
     15: 'Tomato',
     16: 'Mountain',
-    34: 'Empty Arable Land',
+    
+    
     
     #maize variety
     17: 'Grain', 
@@ -32,6 +33,15 @@ crop_dictionary = {
     
     #more crops
     23: 'Watermelon',
+    24: 'Tangerine',
+    25 : 'Avocado',
+    26: 'Artichoke',
+    27: 'Grapes',
+    28: 'OliveTree',
+    29: 'Jojoba',
+    30: 'Asparagus',
+    31: 'Potato',
+    34: 'Empty Arable Land',
     
     #sowing
     32: 'June-July',
@@ -71,11 +81,8 @@ crop_dictionary = {
     98: 'Low',
     
     #esurvey
-    99: 'esurvey',
+    100: 'esurvey',
     
-    #maize
-    101: 'Grain',
-    102: 'Silage',
     
     #nitrogen report
     103: "Low_",
@@ -83,11 +90,7 @@ crop_dictionary = {
     105: "High_",
     
     #some more crops
-    111: 'Artichoke',
-    112: 'Grapes',
-    113: 'OliveTree',
-    114: 'Jojoba',
-    115: 'Asparagus',
+    
     
     #water stress
     124: 'Stress_',
@@ -108,6 +111,9 @@ crop_dictionary = {
     171: 'Late June',
     172: 'Early July',
     173: 'Late July',
+    
+    #Crop
+    174: 'Greenhouse',
     
     #variety
     1000: 'Other Variety',
