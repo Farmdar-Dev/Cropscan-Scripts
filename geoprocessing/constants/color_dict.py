@@ -122,6 +122,17 @@ color_id ={
 17: 101, #Grain
 18: 102, #Silage
 
+#Overlap
+150: 150, #Overlap Spring Maize Wheat"
+151: 151, #Overlap Wheat Rice"
+152: 152, #Overlap Potato Rice"
+153: 153, #Overlap Spring Maize Rice"
+154: 154, #Overlap Spring Maize Potato"
+155: 155, #Overlap Spring Maize Empty Land"
+156: 156, #Overlap Spring Maize Fall Maize"
+
+
+
 
  
  }
