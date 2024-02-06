@@ -38,33 +38,6 @@ def to_shp(df, path, name):
     df.to_file(f"{os.path.join(path, name)}.shp")
 
 
-def intersect(overlap, boundaries_tuple, config):
-    """
-    Intersects the overlap dataframe with each boundary to generate stats.
-    Args:
-    overlap: the overlap dataframe.
-    boundaries_tuple: tuple containing boundary dataframes
-    config: config json data
-    Output:
-    Generates a stats.csv
-    """
-    stats = []
-    
-    print("Generating stats...")
-    
-    #overlaying overlap tile with each boundary df to generate overlapping area per boundary stats
-    
-    for title, boundary_df in boundaries_tuple:
-        containment = gpd.overlay(boundary_df, overlap, keep_geom_type=True, make_valid=True)
-        containment['area'] = calculate_area(containment, config['unit'])
-        con_grouped = containment.groupby(['Boundary Name', 'id', 'title'])['area'].sum().reset_index()
-        stats.append(con_grouped)
-    
-    print("Saving stats...")
-    pd.concat(stats).to_csv(config['output_path'] + '/stats.csv')
-        
-    
-
 def run():
     
     """
@@ -120,8 +93,6 @@ def run():
     print("Saving tile...")
     to_shp(overlap, config['output_path'], config['overlap'])
     
-    #the stats.csv generation is no longer required
-    #intersect(overlap, boundaries_tuples, config)
     
 
 if __name__ == "__main__":
