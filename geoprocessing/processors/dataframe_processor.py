@@ -4,12 +4,9 @@ from constants.generic import PREDICTED_COLUMN
 from utils.area_calculation import calculate_area
 from constants.crop_dict import crop_dictionary
 from constants.color_dict import color_id
-from constants.generic import DEFAULT_CRS
 
 
-
-
-def to_tuple(boundary_dict):
+def to_tuple(boundary_dict, crs_string):
     # Create tuples of (title, dataframe)
     boundary_tuples = [(title, gpd.read_file(path))
     for title, path in boundary_dict.items()]
@@ -20,7 +17,7 @@ def to_tuple(boundary_dict):
     for title, boundary_df in boundary_tuples:
         boundary_df['original_geometry'] = boundary_df.geometry
         boundary_df['layer_id'] = id(boundary_df)
-        boundary_df.to_crs(DEFAULT_CRS, inplace = True)
+        boundary_df.to_crs(crs_string, inplace = True)
         
     print("Preprocessing boundaries.")
     boundary_tuples = drop_duplicates_tuple(boundary_tuples)

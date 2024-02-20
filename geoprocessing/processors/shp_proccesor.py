@@ -2,8 +2,9 @@ import geopandas as geopd
 import pandas as pd
 from processors.dataframe_processor import build_dataframe , reproject_df_crs, split_dfs_by_predicted, merge_df
 from shapely.validation import make_valid
-from constants.generic import DEFAULT_CRS
-def process_shapefiles(shapefile_paths):
+
+
+def process_shapefiles(shapefile_paths, crs_string):
     """
     Read shapefiles and returns a single GeoDataFrame with crs.
     Args:
@@ -12,7 +13,7 @@ def process_shapefiles(shapefile_paths):
     """
     
     print("processing shapefiles")
-    merged_dataframe = merge_shapefiles(shapefile_paths, DEFAULT_CRS)
+    merged_dataframe = merge_shapefiles(shapefile_paths, crs_string)
     merged_dataframe.geometry = merged_dataframe.geometry.apply(lambda geom: fix_invalid_geometry(geom))
     merged_dataframe = explode_df(merged_dataframe)
     merged_dataframe = explode_df(merged_dataframe)
@@ -26,9 +27,8 @@ def extract_polygons(df):
 
     for index, row in df.iterrows():
         if row['geometry'].geom_type != 'Polygon':
+            print(row['geometry'].geom_type)
             rows_to_drop.append(index)
-        elif row['geometry'].geom_type == 'MultiPolygon':
-            print("multi polygon found")
     df = df.drop(rows_to_drop, axis=0)
     df = df.reset_index(drop=True)
     final_df.append(df)
