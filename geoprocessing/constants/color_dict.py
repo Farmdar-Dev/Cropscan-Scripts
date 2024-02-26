@@ -1,5 +1,9 @@
 color_id ={
-    
+
+ #Rice
+ 178: 178, #short duration rice
+ 179: 179, #long duration rice
+ 
  #Sowing Date
  19: 92, #January
  20: 61, #February
@@ -64,7 +68,7 @@ color_id ={
  127: 127, #High Moisture
  
  
- #Variety Scan	
+ #sugarcane Variety Scan	
 1000: 17, #Other Variety
 1001: 18, #CoL-29
 1002: 19, #CoL-44
