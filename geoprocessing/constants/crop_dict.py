@@ -89,9 +89,6 @@ crop_dictionary = {
     104: "Medium_",
     105: "High_",
     
-    #some more crops
-    
-    
     #water stress
     124: 'Stress_',
     125: 'Mild Stress',
@@ -114,8 +111,12 @@ crop_dictionary = {
     
     #Crop
     174: 'Greenhouse',
+    176: 'Water',
+    177: 'Builtup',
     
     #variety
+    178: 'Short Duration Rice',
+    179: 'Long Duration Rice',
     1000: 'Other Variety',
     1001: 'CoL-29',
     1002: 'CoL-44',
