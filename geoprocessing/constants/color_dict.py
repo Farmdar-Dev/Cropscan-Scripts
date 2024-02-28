@@ -62,11 +62,21 @@ color_id ={
  
  
  #Water Stress
- 124:124, #Stress_	
- 125:125, #Mild Stress	
- 126: 126, #No Stress_	
+ 124: 124, #Stress
+ 125: 125, #Mild Stress	
+ 126: 126, #No Stress	
  127: 127, #High Moisture
  
+ #sowing date
+ 185: 185, #7-14 april
+ 186: 186, #14-30 april
+ 187: 187, #11-16 may
+ 188: 188, #11-16 may
+ 
+ #harvest monitoring
+ 189: 189, #17thaug
+ 190: 190, #27th aug
+ 191: 191, #after 27 aug
  
  #sugarcane Variety Scan	
 1000: 17, #Other Variety
