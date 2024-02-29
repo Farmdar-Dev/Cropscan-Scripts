@@ -67,6 +67,9 @@ color_id ={
  126: 126, #No Stress	
  127: 127, #High Moisture
  
+ #harvest monitoring
+ 175: 175, #remaining rice
+ 
  #sowing date
  185: 185, #7-14 april
  186: 186, #14-30 april
