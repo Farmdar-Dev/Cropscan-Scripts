@@ -111,6 +111,11 @@ crop_dictionary = {
     
     #Crop
     174: 'Greenhouse',
+    
+    #harvest monitoring
+    175: 'Remaining Rice',
+    
+    #crop
     176: 'Water',
     177: 'Builtup',
     
