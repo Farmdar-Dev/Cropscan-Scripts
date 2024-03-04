@@ -1,7 +1,7 @@
 from constants.crop_dict import crop_dictionary 
-from constants.generic import TARGET_CRS, GRID_SIZE
+from constants.generic import TARGET_CRS
 import os
-import shapely
+ 
  
 def to_geojson(df, path, name):
     """
@@ -22,8 +22,4 @@ def to_geojson(df, path, name):
             return
 
     df = df.to_crs(TARGET_CRS)
-    
-    df.geometry = shapely.set_precision(df.geometry, grid_size= GRID_SIZE)
-    #tentative release on 31st march 2024 plans to use it like this -> df.geometry = df.geometry.set_precision(grid_size=0.00001)
-    
     df.to_file(f"{os.path.join(path, name)}.geojson", driver='GeoJSON')
