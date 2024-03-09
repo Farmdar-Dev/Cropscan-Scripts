@@ -89,9 +89,6 @@ crop_dictionary = {
     104: "Medium_",
     105: "High_",
     
-    #some more crops
-    
-    
     #water stress
     124: 'Stress_',
     125: 'Mild Stress',
@@ -116,7 +113,36 @@ crop_dictionary = {
     #Crop
     174: 'Greenhouse',
     
-    #variety
+    #harvest monitoring
+    175: 'Remaining Rice',
+    
+    #crop
+    176: 'Water',
+    177: 'Builtup',
+    
+    #rice variety
+    178: 'Short Duration Rice',
+    179: 'Long Duration Rice',
+    
+    #cropssss
+    180: 'Empty Land',
+    181: 'Roads',
+    182: 'Young Orchard',
+    183: 'Less Dense Orchard',
+    184: 'Dense Orchard',
+    
+    #sowing date
+    185: '7th April to 14th April',
+    186: '14th April to 30th April',
+    187: '30th April to 11th May',
+    188: '11th May to 16th May',
+    
+    #harvest monitoring
+    189: '17th August',
+    190: '27th August',
+    191: 'After 27th August',
+    
+    #sugarcane variety
     1000: 'Other Variety',
     1001: 'CoL-29',
     1002: 'CoL-44',
