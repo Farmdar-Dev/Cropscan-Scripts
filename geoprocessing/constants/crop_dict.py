@@ -194,6 +194,45 @@ crop_dictionary = {
     1048: 'US-54',
     1049: 'CPF-239',
     1050: 'CSSG-676',
-    1051: 'HS-2'
+    1051: 'HS-2',
+    
+    
+    # Root Zone Soil Moisture
+    
+    192:	"Low Moisture",
+    193:	"Medium Moisture",
+    194:	"Good Moisture",
+    195:	"High Moisture",
+    
+    
+    # Top Soil Moisture
+    196:	"Low_Moisture",
+    197:	"Medium_Moisture",
+    198:	"Good_Moisture",
+    199:	"High_Moisture",
+    
+    
+    
+    # Biomass
+    
+    200:	"Low Biomass",
+    201:	"Medium Biomass",
+    202:	"Good Biomass",
+    203:	"High Biomass"
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+    
+    
     
 }

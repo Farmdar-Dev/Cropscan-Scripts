@@ -149,7 +149,27 @@ color_id ={
 156: 156, #Overlap Spring Maize Fall Maize"
 
 
+# Root Zone Soil Moisture
+
+192:	192,	#Low Moisture
+193:	193,	#Medium Moisture
+194:	194,	#Good Moisture
+195:	195,	#High Moisture
 
 
+#Top Soil Moisture
+
+196:	196,	#Low_Moisture
+197:	197,	#Medium_Moisture
+198:	198,	#Good_Moisture
+199:	199,	#High_Moisture
+
+#Biomass
+ 
+200:	200,	#Low Biomass
+201:	201,	#Medium Biomass
+202:	202,	#Good Biomass
+203:	203	    #High Biomass 
+ 
  
  }
