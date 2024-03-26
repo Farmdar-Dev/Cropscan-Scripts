@@ -13,6 +13,7 @@ import time
 from overlap.overlap_dict import overlap_dictionary
 from constants.generic import TARGET_CRS
 import os
+from utils.get_default_crs import get_crs_string
 
 
 
@@ -47,8 +48,10 @@ def run():
     print("Reading data...")
     config = read_config_json("overlap/config.json")
     
-    boundaries_tuples = to_tuple(config["boundaries"])
-    shapefiles_tuples = to_tuple(config["shapefiles"])
+    crs_string = get_crs_string(config["boundaries"]['aoi'])
+    
+    boundaries_tuples = to_tuple(config["boundaries"], crs_string)
+    shapefiles_tuples = to_tuple(config["shapefiles"], crs_string)
     
     print("Preprocessing data...")
     
