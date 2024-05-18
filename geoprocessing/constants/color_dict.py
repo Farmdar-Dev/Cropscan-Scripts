@@ -1,5 +1,9 @@
 color_id ={
-    
+
+ #Rice
+ 178: 178, #short duration rice
+ 179: 179, #long duration rice
+ 
  #Sowing Date
  19: 92, #January
  20: 61, #February
@@ -58,13 +62,26 @@ color_id ={
  
  
  #Water Stress
- 124:124, #Stress_	
- 125:125, #Mild Stress	
- 126: 126, #No Stress_	
+ 124: 124, #Stress
+ 125: 125, #Mild Stress	
+ 126: 126, #No Stress	
  127: 127, #High Moisture
  
+ #harvest monitoring
+ 175: 175, #remaining rice
  
- #Variety Scan	
+ #sowing date
+ 185: 185, #7-14 april
+ 186: 186, #14-30 april
+ 187: 187, #11-16 may
+ 188: 188, #11-16 may
+ 
+ #harvest monitoring
+ 189: 189, #17thaug
+ 190: 190, #27th aug
+ 191: 191, #after 27 aug
+ 
+ #sugarcane Variety Scan	
 1000: 17, #Other Variety
 1001: 18, #CoL-29
 1002: 19, #CoL-44
@@ -122,6 +139,37 @@ color_id ={
 17: 101, #Grain
 18: 102, #Silage
 
+#Overlap
+150: 150, #Overlap Spring Maize Wheat"
+151: 151, #Overlap Wheat Rice"
+152: 152, #Overlap Potato Rice"
+153: 153, #Overlap Spring Maize Rice"
+154: 154, #Overlap Spring Maize Potato"
+155: 155, #Overlap Spring Maize Empty Land"
+156: 156, #Overlap Spring Maize Fall Maize"
 
+
+# Root Zone Soil Moisture
+
+192:	192,	#Low Moisture
+193:	193,	#Medium Moisture
+194:	194,	#Good Moisture
+195:	195,	#High Moisture
+
+
+#Top Soil Moisture
+
+196:	196,	#Low_Moisture
+197:	197,	#Medium_Moisture
+198:	198,	#Good_Moisture
+199:	199,	#High_Moisture
+
+#Biomass
+ 
+200:	200,	#Low Biomass
+201:	201,	#Medium Biomass
+202:	202,	#Good Biomass
+203:	203	    #High Biomass 
+ 
  
  }

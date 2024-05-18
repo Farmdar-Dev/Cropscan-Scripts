@@ -70,7 +70,7 @@ def survey_json_creator(intersected_dataframes, config):
                 'Boundary Name', 'id', 'Esurvey Area', 'geometry', 'area']]
             crop_df = df[col_to_keep]
             total_area_, total_esurvey_, total_crop_area_ = get_total_aoi_stats(
-                df, crop_df, config["crop"])
+                df, crop_df, config["crop"], config["unit"])
             total_area = total_area_
             total_esurvey = total_esurvey_
             total_crop_area = total_crop_area_
@@ -142,11 +142,11 @@ def survey_json_creator(intersected_dataframes, config):
         json.dump(survey_json, outfile)
 
 
-def get_total_aoi_stats(aoi_df, crop_df, crop_name):
+def get_total_aoi_stats(aoi_df, crop_df, crop_name, unit):
     #make a copy of aoi_df 
     aoi_df_cpy = aoi_df.copy()
     reproject_df_crs(aoi_df_cpy)
-    aoi_df_cpy['area'] = calculate_area(aoi_df_cpy, 'acre')
+    aoi_df_cpy['area'] = calculate_area(aoi_df_cpy, unit)
     total_area = aoi_df_cpy['area'].sum().round(2)
     # drop the area column
     aoi_df_cpy.drop(columns=['area'], inplace=True)
