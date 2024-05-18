@@ -19,6 +19,8 @@ crop_dictionary = {
     15: 'Tomato',
     16: 'Mountain',
     205: 'Brassica',
+    204: 'Soyabean',
+    
     
     
     
