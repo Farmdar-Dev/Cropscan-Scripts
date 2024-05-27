@@ -32,7 +32,6 @@ def run():
     config = read_config_json("config.json")
     crs_string = get_crs_string(config["boundary_details"]['aoi'])
     print("CRS:", crs_string)
-    return
 
     boundaries_tuples = to_tuple(config["boundary_details"], crs_string)
     shapefiles = process_shapefiles(config["shapefile_paths"], crs_string)
