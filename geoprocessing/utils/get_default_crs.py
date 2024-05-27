@@ -5,7 +5,7 @@ def get_crs_string(file_path):
     utm_crs = gdf.estimate_utm_crs()
     if utm_crs:
         crs_str = utm_crs.to_string()
-        if any(zone in crs_str for zone in ['UTM zone 41', 'UTM zone 42', 'UTM zone 43']):
+        if any(zone in crs_str for zone in ['EPSG:32641', 'EPSG:32642', 'EPSG:32643']):
             return "EPSG:32642"
         else:
             return crs_str
