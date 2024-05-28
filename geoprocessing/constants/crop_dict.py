@@ -30,7 +30,7 @@ crop_dictionary = {
     
     #sowing
     19:'January',
-    20:'Febraury',
+    20:'February',
     21:'March',
     22:'April',
     
