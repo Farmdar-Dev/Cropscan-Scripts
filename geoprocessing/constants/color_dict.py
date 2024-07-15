@@ -169,7 +169,8 @@ color_id ={
 200:	200,	#Low Biomass
 201:	201,	#Medium Biomass
 202:	202,	#Good Biomass
-203:	203	    #High Biomass 
- 
- 
+203:	203,	#High Biomass 
+
+206:    206     #ratoon new class
+  
  }

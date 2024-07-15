@@ -19,6 +19,7 @@ crop_dictionary = {
     15: 'Tomato',
     16: 'Mountain',
     205: 'Brassica',
+    206: 'Ratoon',  #new class
     204: 'Soyabean',
     209: 'Wheat Harvested',
     
