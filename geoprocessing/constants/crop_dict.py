@@ -146,6 +146,9 @@ crop_dictionary = {
     190: '27th August',
     191: 'After 27th August',
     
+    #crop
+    210: 'Sesame',
+    
     #sugarcane variety
     1000: 'Other Variety',
     1001: 'CoL-29',
