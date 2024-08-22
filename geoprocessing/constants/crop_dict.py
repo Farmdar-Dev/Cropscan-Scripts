@@ -149,6 +149,8 @@ crop_dictionary = {
     #crop
     210: 'Sesame',
     211: 'New Sowing',
+    212: 'Cloud',
+    213: 'Shadow',
     
     #sugarcane variety
     1000: 'Other Variety',
