@@ -11,3 +11,14 @@ def get_crs_string(file_path):
         else:
             return crs_str
     return "CRS could not be estimated"
+
+
+def get_gdf_crs_string(gdf):
+    utm_crs = gdf.estimate_utm_crs()
+    if utm_crs:
+        crs_str = utm_crs.to_string()
+        if any(zone in crs_str for zone in ['EPSG:32641', 'EPSG:32642', 'EPSG:32643']):
+            return CRS.from_epsg("32642")
+        else:
+            return crs_str
+    return "CRS could not be estimated"

@@ -4,6 +4,7 @@ from constants.generic import PREDICTED_COLUMN
 from utils.area_calculation import calculate_area
 from constants.crop_dict import crop_dictionary
 from constants.color_dict import color_id
+from utils.get_default_crs import get_gdf_crs_string
 
 
 def to_tuple(boundary_dict, crs_string):
@@ -55,9 +56,8 @@ def reproject_df_crs(dataframe, crs=None):
     if no CRS is specified, it will estimate the utm CRS
     """
     if crs is None:
-        crs = dataframe.estimate_utm_crs()
+        crs = get_gdf_crs_string(dataframe)
     dataframe.to_crs(crs, inplace=True)
-    pass
 
 
 def reproject_dfs_crs(dataframes: list, crs=None):
