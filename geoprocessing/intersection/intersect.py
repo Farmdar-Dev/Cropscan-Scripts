@@ -17,8 +17,10 @@ def add_esurvey_area(boundary_df, esurvey_path, unit):
         return boundary_df
 
     esurvey_df = gpd.read_file(esurvey_path)
-    reproject_df_crs(esurvey_df)
     boundary_df_cpy = boundary_df.copy()
+    
+    reproject_df_crs(esurvey_df, boundary_df_cpy.crs)
+        
     intersection = gpd.overlay(boundary_df_cpy, esurvey_df, how='intersection')
     intersection[ESURVEY_COLUMN] = calculate_area(intersection, unit)
     intersection = intersection.groupby(
