@@ -228,10 +228,8 @@ crop_dictionary = {
     200:	"Low Biomass",
     201:	"Medium Biomass",
     202:	"Good Biomass",
-    203:	"High Biomass"
-    
-
-    
+    203:	"High Biomass",
+    215:  "Harvested Sugarcane"
     
     
     
